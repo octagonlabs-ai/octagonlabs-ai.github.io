@@ -701,7 +701,7 @@ class Component extends DCLogic {
   /* ---------------- CONTENT ---------------- */
   data(){
     const cfg = {
-      email: 'hello@octagonlabs.com',
+      email: 'octagonlabs.ai@protonmail.com',
       whatsapp: '528114696951',
       location: 'Monterrey, México',
       coords: '25.6866° N / 100.3161° W',
@@ -1498,7 +1498,7 @@ class Component extends DCLogic {
       _subject: 'Octagon Labs — New project inquiry from ' + (name || 'website'),
       _template: 'table'
     };
-    fetch('https://formsubmit.co/ajax/octagon.labs@protonmail.com', {
+    fetch('https://formsubmit.co/ajax/octagonlabs.ai@protonmail.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload)
@@ -1518,9 +1518,11 @@ class Component extends DCLogic {
         '',
         message
       ];
-      const href = 'mailto:octagon.labs@protonmail.com?subject=' + subject + '&body=' + encodeURIComponent(bodyLines.join('\n'));
+      const href = 'mailto:octagonlabs.ai@protonmail.com?subject=' + subject + '&body=' + encodeURIComponent(bodyLines.join('\n'));
       try { window.location.href = href; } catch (e) {}
-      this.setState({ sent: true });
+      window.alert(isES
+        ? 'No se pudo enviar automáticamente. Revisa y envía el correo que abrimos en tu aplicación de correo.'
+        : 'Automatic delivery failed. Review and send the email opened in your mail app.');
     }).then(() => {
       if (btn) { btn.disabled = false; btn.style.opacity = ''; btn.style.pointerEvents = ''; }
     });
