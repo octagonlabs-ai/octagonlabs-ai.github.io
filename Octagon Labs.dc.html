@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Octagon Labs — Research, Design & Technology</title>
+<meta name="description" content="Octagon Labs is an independent technology lab that researches, designs and builds digital products, intelligent systems and scalable companies.">
+<meta name="theme-color" content="#0A0C10">
+<link rel="icon" type="image/svg+xml" href="public/brand/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Octagon Labs — Research, Design & Technology">
+<meta property="og:description" content="An independent technology lab that researches, designs and builds digital products, intelligent systems and scalable companies.">
+<meta property="og:image" content="public/brand/og-image.jpg">
+<meta property="og:site_name" content="Octagon Labs">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Octagon Labs — Research, Design & Technology">
+<meta name="twitter:description" content="An independent technology lab that researches, designs and builds digital products and companies.">
+<meta name="twitter:image" content="public/brand/og-image.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Octagon Labs","description":"An independent technology lab that researches, designs and builds digital products, intelligent systems and scalable companies.","url":"https://octagonlabs.com","logo":"https://octagonlabs.com/public/brand/octagon-labs-logo-dark.svg","foundingLocation":{"@type":"Place","address":{"@type":"PostalAddress","addressLocality":"Monterrey","addressCountry":"MX"}}}</script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  html,body{background:#0A0C10;color:#F4F6F8}
+  body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;line-height:1.45;overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  :root{--acc:#8FE3F0;--bg:#0A0C10;--ink:#F4F6F8;--dim:rgba(244,246,248,.60);--faint:rgba(244,246,248,.38);--line:rgba(244,246,248,.12);--line2:rgba(244,246,248,.20);--panel:rgba(255,255,255,.028)}
+  ::selection{background:var(--acc);color:#05070A}
+  a{color:var(--acc);text-decoration:none;transition:color .3s ease}
+  a:hover{color:#fff}
+  img,svg{display:block;max-width:100%}
+  button{font-family:inherit;cursor:pointer}
+  input,textarea,select{font-family:inherit}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:500}
+  .wrap{width:100%;max-width:1360px;margin-inline:auto;padding-inline:clamp(20px,5vw,64px)}
+  :focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:2px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  /* fixed layers */
+  #ol-gl{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+  #ol-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(rgba(244,246,248,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(244,246,248,.035) 1px,transparent 1px);
+    background-size:64px 64px;mask-image:radial-gradient(circle at 50% 38%,#000 0%,transparent 72%)}
+  #ol-fallback{position:fixed;inset:0;z-index:0;display:none;place-items:center;pointer-events:none}
+  #ol-fallback svg{width:min(64vw,520px);height:auto;opacity:.5;animation:ol-spin 60s linear infinite}
+  #ol-app{position:relative;z-index:2}
+  /* progress */
+  #ol-progress{position:fixed;top:0;left:0;height:2px;width:100%;transform:scaleX(0);transform-origin:0 50%;background:var(--acc);z-index:60;box-shadow:0 0 12px var(--acc)}
+  /* cursor */
+  #ol-cursor{position:fixed;inset:0;z-index:300;pointer-events:none;display:none}
+  #ol-cur-dot{position:fixed;top:0;left:0;width:6px;height:6px;border-radius:50%;background:var(--acc);transform:translate(-50%,-50%);will-change:transform}
+  #ol-cur-ring{position:fixed;top:0;left:0;width:34px;height:34px;border:1px solid var(--line2);border-radius:50%;transform:translate(-50%,-50%);will-change:transform,width,height;transition:width .25s ease,height .25s ease,border-color .25s ease,opacity .25s}
+  body.has-cursor,body.has-cursor a,body.has-cursor button,body.has-cursor [data-cursor]{cursor:none}
+  body.has-cursor input,body.has-cursor textarea,body.has-cursor select{cursor:text}
+  body.has-cursor #ol-cursor{display:block}
+  /* preloader */
+  #ol-pre{position:fixed;inset:0;z-index:200;background:#0A0C10;display:grid;place-items:center;transition:opacity .8s ease,visibility .8s;animation:ol-pre-safe .1s linear 4s forwards}
+  #ol-pre.done{opacity:0;visibility:hidden;pointer-events:none}
+  .ol-pre__box{display:flex;flex-direction:column;align-items:center;gap:26px}
+  .ol-pre__iso{width:96px;height:96px;animation:ol-pre-pulse 2.4s ease-in-out infinite}
+  .ol-pre__iso polygon{stroke-dasharray:620;stroke-dashoffset:620;animation:ol-draw 1.15s cubic-bezier(.5,0,.2,1) .15s forwards}
+  .ol-pre__iso .web{opacity:0;animation:ol-fadein .8s ease .9s forwards}
+  .ol-pre__wm{font-size:12px;letter-spacing:.5em;color:var(--dim);padding-left:.5em}
+  .ol-pre__bar{width:180px;height:1px;background:var(--line);position:relative;overflow:hidden}
+  .ol-pre__bar i{position:absolute;inset:0;transform-origin:0 50%;transform:scaleX(0);background:var(--acc)}
+  .ol-pre__pct{font-size:11px;letter-spacing:.3em;color:var(--faint)}
+  /* nav */
+  .ol-nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .4s ease,border-color .4s ease,padding .4s ease,backdrop-filter .4s}
+  .ol-nav__in{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-block:22px;transition:padding-block .4s ease;border-bottom:1px solid transparent}
+  .ol-nav.is-scrolled{background:rgba(10,12,16,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .ol-nav.is-scrolled .ol-nav__in{padding-block:13px;border-color:var(--line)}
+  .ol-nav.is-scrolled .ol-nav__logo svg{height:clamp(30px,2.8vw,38px)}
+  .ol-nav__logo svg{height:clamp(34px,3.4vw,46px);width:auto;transition:height .4s ease}
+  .ol-nav__links{display:flex;align-items:center;gap:34px}
+  .ol-nav__link{position:relative;color:var(--dim);font-size:13px;letter-spacing:.08em;padding:4px 0;transition:color .3s}
+  .ol-nav__link::after{content:"";position:absolute;left:0;bottom:-2px;height:1px;width:0;background:var(--acc);transition:width .35s cubic-bezier(.5,0,.2,1)}
+  .ol-nav__link:hover{color:#fff}
+  .ol-nav__link:hover::after{width:100%}
+  .ol-nav__right{display:flex;align-items:center;gap:18px}
+  .ol-lang{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--line);border-radius:100px;padding:3px;background:var(--panel)}
+  .ol-lang button{background:none;border:0;color:var(--faint);font-size:11px;letter-spacing:.12em;padding:5px 10px;border-radius:100px;transition:all .3s}
+  .ol-lang button.on{background:var(--ink);color:#0A0C10}
+  .ol-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;background:none;border:1px solid var(--line);border-radius:10px}
+  .ol-burger span{display:block;width:18px;height:1.5px;background:var(--ink);margin-inline:auto;transition:transform .35s,opacity .3s}
+  /* mobile menu */
+  #ol-menu{position:fixed;inset:0;z-index:120;background:rgba(8,10,13,.86);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transform:translateY(-100%);opacity:0;visibility:hidden;transition:transform .6s cubic-bezier(.7,0,.2,1),opacity .5s,visibility .6s;display:flex;flex-direction:column;padding:24px}
+  #ol-menu.open{transform:translateY(0);opacity:1;visibility:visible}
+  .ol-menu__top{display:flex;justify-content:space-between;align-items:center}
+  .ol-menu__close{width:44px;height:44px;background:none;border:1px solid var(--line);border-radius:10px;color:var(--ink);font-size:18px}
+  .ol-menu__links{margin-top:auto;margin-bottom:auto;display:flex;flex-direction:column;gap:6px}
+  .ol-menu__link{font-size:clamp(34px,10vw,60px);letter-spacing:-.02em;color:var(--ink);line-height:1.06;padding:6px 0}
+  .ol-menu__link span{color:var(--faint);font-size:14px;letter-spacing:.1em;vertical-align:super;margin-right:12px}
+  .ol-menu__foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;color:var(--faint);font-size:12px}
+  .ol-menu__iso{position:absolute;right:-40px;bottom:-40px;width:320px;opacity:.10;pointer-events:none}
+  /* section chrome */
+  .ol-sec{position:relative;padding-block:clamp(88px,13vh,168px)}
+  .ol-kicker{font-size:12px;letter-spacing:.34em;color:var(--acc);text-transform:uppercase;display:inline-flex;align-items:center;gap:12px}
+  .ol-kicker::before{content:"";width:26px;height:1px;background:var(--acc);opacity:.6}
+  .ol-h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.02em;font-weight:700}
+  .ol-line{display:block;overflow:hidden}
+  .ol-line__i{display:block;will-change:transform}
+  /* hero */
+  #ol-hero{min-height:100svh;display:flex;align-items:center;position:relative;padding-top:120px}
+  .ol-hero__veil{position:absolute;inset:0;z-index:-1;background:radial-gradient(120% 90% at 50% 42%,rgba(10,12,16,0) 30%,rgba(10,12,16,.55) 78%)}
+  .ol-hero__title{font-size:clamp(40px,8.2vw,124px);line-height:.98;letter-spacing:-.035em;font-weight:700;text-shadow:0 2px 60px rgba(0,0,0,.5)}
+  .ol-hero__chips{display:flex;flex-wrap:wrap;gap:10px}
+  .ol-chip{font-size:11px;letter-spacing:.16em;color:var(--dim);border:1px solid var(--line);border-radius:100px;padding:8px 15px;background:rgba(10,12,16,.35);text-transform:uppercase}
+  .ol-cta{display:inline-flex;align-items:center;gap:12px;font-size:14px;letter-spacing:.04em;padding:16px 26px;border-radius:100px;transition:transform .4s cubic-bezier(.5,0,.2,1),background .35s,color .35s,border-color .35s}
+  .ol-cta--solid{background:var(--ink);color:#0A0C10;border:1px solid var(--ink)}
+  .ol-cta--ghost{background:rgba(10,12,16,.4);color:var(--ink);border:1px solid var(--line2)}
+  .ol-cta svg{width:15px;height:15px;transition:transform .4s cubic-bezier(.5,0,.2,1)}
+  .ol-cta:hover{transform:translateY(-2px)}
+  .ol-cta--ghost:hover{border-color:var(--acc);color:#fff}
+  .ol-cta:hover svg{transform:translateX(4px)}
+  .ol-hud{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;color:var(--faint);font-size:11px;letter-spacing:.18em}
+  .ol-scrollhint{display:inline-flex;align-items:center;gap:10px}
+  .ol-scrollhint i{display:block;width:1px;height:34px;background:linear-gradient(var(--acc),transparent);animation:ol-drop 1.8s ease-in-out infinite}
+  /* manifesto */
+  .ol-manifesto__lead{font-size:clamp(32px,6.4vw,86px);line-height:1.02;letter-spacing:-.03em;font-weight:700;max-width:16ch}
+  .ol-manifesto__lead .soft{color:var(--faint)}
+  .ol-manifesto__body{max-width:56ch;color:var(--dim);font-size:clamp(15px,1.5vw,19px);line-height:1.7}
+  /* projects */
+  .ol-proj{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(28px,5vw,72px);align-items:center;padding-block:clamp(48px,7vw,88px);border-top:1px solid var(--line)}
+  .ol-proj--rev .ol-proj__media{order:-1}
+  .ol-proj__num{font-size:12px;letter-spacing:.3em;color:var(--faint)}
+  .ol-proj__name{font-size:clamp(34px,5.4vw,68px);line-height:1;letter-spacing:-.02em;font-weight:700;margin-top:14px}
+  .ol-proj__tag{color:var(--acc);font-size:clamp(15px,1.7vw,20px);margin-top:16px}
+  .ol-proj__desc{color:var(--dim);max-width:46ch;margin-top:18px;font-size:15.5px;line-height:1.65}
+  .ol-proj__tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .ol-ptag{font-size:11px;letter-spacing:.08em;color:var(--dim);border:1px solid var(--line);border-radius:100px;padding:6px 12px}
+  .ol-proj__link{display:inline-flex;align-items:center;gap:10px;margin-top:26px;font-size:13px;letter-spacing:.1em;color:var(--ink);border-bottom:1px solid var(--line2);padding-bottom:5px;transition:border-color .3s,gap .3s}
+  .ol-proj__link:hover{border-color:var(--acc);gap:16px;color:#fff}
+  .ol-proj__link svg{width:14px;height:14px}
+  .ol-console{--pa:var(--acc);border:1px solid var(--line);border-radius:16px;background:linear-gradient(160deg,rgba(255,255,255,.03),rgba(255,255,255,0));overflow:hidden;position:relative}
+  .ol-console::before{content:"";position:absolute;inset:0;background:radial-gradient(90% 80% at 70% 20%,color-mix(in srgb,var(--pa) 16%,transparent),transparent 60%);opacity:.9}
+  .ol-console__bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);position:relative}
+  .ol-console__dots{display:flex;gap:6px}
+  .ol-console__dots i{width:8px;height:8px;border-radius:50%;background:var(--line2)}
+  .ol-console__dots i:first-child{background:var(--pa)}
+  .ol-console__id{font-size:11px;letter-spacing:.18em;color:var(--faint)}
+  .ol-console__body{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:10px;padding:22px;min-height:230px}
+  .ol-console__viz{position:relative;display:grid;place-items:center}
+  .ol-console__viz svg{width:82%;height:auto}
+  .ol-console__viz .oc-edge{stroke:var(--pa);opacity:.9}
+  .ol-console__viz .oc-web{stroke:var(--pa);opacity:.28}
+  .ol-console__viz .oc-node{fill:var(--pa)}
+  .ol-console__read{display:flex;flex-direction:column;justify-content:center;gap:9px;border-left:1px solid var(--line);padding-left:16px}
+  .ol-console__row{display:flex;flex-direction:column;gap:2px}
+  .ol-console__k{font-size:9.5px;letter-spacing:.2em;color:var(--faint)}
+  .ol-console__v{font-size:12px;letter-spacing:.06em;color:var(--ink)}
+  .ol-console__status{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.1em;color:var(--pa)}
+  .ol-console__status i{width:7px;height:7px;border-radius:50%;background:var(--pa);box-shadow:0 0 10px var(--pa);animation:ol-pulse 2s ease-in-out infinite}
+  .ol-console__shot{position:relative;padding:14px}
+  .ol-console__shot img{width:100%;height:auto;display:block;border-radius:9px;border:1px solid var(--line);box-shadow:0 18px 40px rgba(0,0,0,.4)}
+  .ol-console__shot--mobile{display:grid;place-items:center;padding:26px 22px;min-height:230px}
+  .ol-console__shot--mobile::after{content:"";position:absolute;left:50%;top:50%;width:min(70%,260px);height:78%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--pa) 22%,transparent),transparent 70%);filter:blur(30px);z-index:0}
+  .ol-console__shot--mobile img{position:relative;z-index:1;width:auto;max-width:100%;max-height:440px;border-radius:22px;border:1px solid var(--line2)}
+  /* process orbit */
+  .ol-orbit{position:relative;width:100%;max-width:620px;margin-inline:auto;aspect-ratio:1/1}
+  .ol-orbit__svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .ol-orbit__ring{fill:none;stroke:var(--line);stroke-width:1}
+  .ol-orbit__center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:56%;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+  .ol-orbit__cnum{font-size:12px;letter-spacing:.3em;color:var(--acc)}
+  .ol-orbit__ctitle{font-size:clamp(24px,3.4vw,40px);font-weight:700;letter-spacing:-.02em}
+  .ol-orbit__cdesc{font-size:13.5px;color:var(--dim);line-height:1.6;max-width:34ch}
+  .ol-orbit__node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;padding:0;text-align:center;transition:transform .35s}
+  .ol-orbit__dot{width:52px;height:52px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-size:11px;letter-spacing:.1em;color:var(--dim);background:rgba(10,12,16,.6);transition:all .35s}
+  .ol-orbit__ntitle{font-size:11px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase;transition:color .35s}
+  .ol-orbit__node:hover .ol-orbit__dot{border-color:var(--acc);color:#fff}
+  .ol-orbit__node.is-active .ol-orbit__dot{border-color:var(--acc);background:var(--acc);color:#0A0C10;box-shadow:0 0 26px color-mix(in srgb,var(--acc) 55%,transparent)}
+  .ol-orbit__node.is-active .ol-orbit__ntitle{color:var(--ink)}
+  .ol-orbit__node:nth-of-type(1){left:50%;top:8%}
+  .ol-orbit__node:nth-of-type(2){left:86%;top:29%}
+  .ol-orbit__node:nth-of-type(3){left:86%;top:71%}
+  .ol-orbit__node:nth-of-type(4){left:50%;top:92%}
+  .ol-orbit__node:nth-of-type(5){left:14%;top:71%}
+  .ol-orbit__node:nth-of-type(6){left:14%;top:29%}
+  /* capabilities */
+  .ol-caps{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+  @media(min-width:1080px){.ol-caps{grid-template-columns:repeat(5,1fr)}}
+  @media(max-width:560px){.ol-caps{grid-template-columns:1fr}}
+  .ol-cap{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px 26px;min-height:200px;display:flex;flex-direction:column;position:relative;transition:background .4s}
+  .ol-cap::after{content:"";position:absolute;left:0;top:0;height:2px;width:0;background:var(--acc);transition:width .5s cubic-bezier(.5,0,.2,1)}
+  .ol-cap:hover{background:rgba(255,255,255,.02)}
+  .ol-cap:hover::after{width:100%}
+  .ol-cap__code{font-size:11px;letter-spacing:.2em;color:var(--faint)}
+  .ol-cap__name{font-size:20px;letter-spacing:-.01em;font-weight:700;margin-top:44px}
+  .ol-cap__desc{color:var(--dim);font-size:13.5px;line-height:1.6;margin-top:12px}
+  /* metrics */
+  .ol-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .ol-metric{background:#0A0C10;padding:34px 26px;min-width:0}
+  .ol-metric__num{font-size:clamp(30px,3.4vw,46px);font-weight:700;letter-spacing:-.02em;line-height:1;font-family:"IBM Plex Mono",monospace;white-space:nowrap;overflow:hidden;text-overflow:clip}
+  .ol-metric__num b{color:var(--acc);font-weight:700}
+  .ol-metric__label{color:var(--dim);font-size:13px;letter-spacing:.04em;margin-top:14px}
+  /* philosophy */
+  .ol-philo{border-top:1px solid var(--line)}
+  .ol-phi{display:grid;grid-template-columns:88px 1fr;gap:clamp(16px,4vw,60px);align-items:baseline;padding-block:clamp(26px,3.6vw,46px);border-bottom:1px solid var(--line);transition:padding-left .5s}
+  .ol-phi:hover{padding-left:14px}
+  .ol-phi__num{font-size:14px;letter-spacing:.2em;color:var(--acc)}
+  .ol-phi__wrap{display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap}
+  .ol-phi__title{font-size:clamp(26px,4.4vw,54px);font-weight:700;letter-spacing:-.02em;line-height:1}
+  .ol-phi__desc{color:var(--dim);font-size:15px;max-width:34ch;text-align:right}
+  /* about */
+  .ol-about{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,90px);align-items:start}
+  .ol-about__p{color:var(--dim);font-size:clamp(16px,1.8vw,21px);line-height:1.7;margin-top:22px}
+  .ol-team{margin-top:38px;border:1px dashed var(--line2);border-radius:14px;padding:26px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .ol-team__note{color:var(--faint);font-size:13px;letter-spacing:.04em}
+  .ol-team__soon{font-size:11px;letter-spacing:.2em;color:var(--acc);border:1px solid var(--line2);border-radius:100px;padding:6px 12px}
+  /* contact */
+  .ol-contact__title{font-size:clamp(38px,7vw,96px);line-height:.98;letter-spacing:-.03em;font-weight:700}
+  .ol-form{display:grid;grid-template-columns:1fr 1fr;gap:20px 24px;margin-top:12px}
+  .ol-field{display:flex;flex-direction:column;gap:9px}
+  .ol-field--full{grid-column:1/-1}
+  .ol-field label{font-size:11px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+  .ol-input{background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:15px 16px;font-size:15px;transition:border-color .3s,background .3s}
+  .ol-input::placeholder{color:var(--faint)}
+  .ol-input:focus{outline:none;border-color:var(--acc);background:rgba(255,255,255,.04)}
+  textarea.ol-input{resize:vertical;min-height:130px}
+  select.ol-input{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23F4F6F8' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+  .ol-err{color:#FF8A8A;font-size:12px;letter-spacing:.02em;display:none}
+  .ol-form__foot{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;margin-top:6px}
+  .ol-form__direct{color:var(--faint);font-size:13px}
+  .ol-success{border:1px solid var(--line);border-radius:16px;padding:clamp(32px,5vw,60px);background:linear-gradient(160deg,rgba(255,255,255,.03),transparent);text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .ol-success__iso{width:70px;height:70px;opacity:.9}
+  .ol-success h3{font-size:clamp(26px,3.5vw,40px);font-weight:700;letter-spacing:-.02em}
+  .ol-success p{color:var(--dim);max-width:44ch}
+  /* footer */
+  .ol-footer{border-top:1px solid var(--line);padding-block:clamp(56px,7vw,90px);position:relative}
+  .ol-footer__grid{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:start}
+  .ol-footer__logo svg{height:30px;width:auto;margin-bottom:18px}
+  .ol-footer__tag{color:var(--dim);font-size:14px;max-width:34ch;line-height:1.6}
+  .ol-footer__col h4{font-size:11px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase;margin-bottom:16px}
+  .ol-footer__col a{display:block;color:var(--dim);font-size:14px;padding:5px 0;transition:color .3s}
+  .ol-footer__col a:hover{color:#fff}
+  .ol-footer__bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;margin-top:clamp(40px,6vw,72px);padding-top:26px;border-top:1px solid var(--line);color:var(--faint);font-size:12px;letter-spacing:.03em}
+  .ol-status{display:inline-flex;align-items:center;gap:9px;color:var(--dim)}
+  .ol-status i{width:8px;height:8px;border-radius:50%;background:#4ADE80;box-shadow:0 0 10px #4ADE80;animation:ol-pulse 2s ease-in-out infinite}
+  .ol-footer__legal{display:flex;gap:22px;flex-wrap:wrap}
+  .ol-backtop{display:inline-flex;align-items:center;gap:8px;color:var(--dim)}
+  .ol-backtop:hover{color:#fff}
+  /* keyframes */
+  @keyframes ol-spin{to{transform:rotate(360deg)}}
+  @keyframes ol-pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  @keyframes ol-draw{to{stroke-dashoffset:0}}
+  @keyframes ol-fadein{to{opacity:1}}
+  @keyframes ol-pre-pulse{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.04);opacity:1}}
+  @keyframes ol-pre-safe{to{opacity:0;visibility:hidden;pointer-events:none}}
+  @keyframes ol-drop{0%{transform:translateY(-6px);opacity:0}30%{opacity:1}100%{transform:translateY(10px);opacity:0}}
+  /* responsive */
+  @media(max-width:920px){
+    .ol-nav__links{display:none}
+    .ol-burger{display:flex}
+    .ol-about{grid-template-columns:1fr}
+    .ol-footer__grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:820px){
+    .ol-proj{grid-template-columns:1fr;gap:30px}
+    .ol-proj--rev .ol-proj__media{order:0}
+    .ol-form{grid-template-columns:1fr}
+    .ol-phi__wrap{flex-direction:column;gap:8px}
+    .ol-phi__desc{text-align:left}
+    .ol-phi{grid-template-columns:52px 1fr}
+    .ol-orbit{max-width:none;aspect-ratio:auto}
+    .ol-orbit__svg{display:none}
+    .ol-orbit__center{position:static;transform:none;width:100%;text-align:left;align-items:flex-start;padding:24px;border:1px solid var(--line);border-radius:14px;margin-bottom:20px;min-height:150px}
+    .ol-orbit__cdesc{text-align:left}
+    .ol-orbit{display:flex;flex-direction:column}
+    .ol-orbit__node{position:static !important;transform:none !important;flex-direction:row;gap:14px;width:100%;padding:14px 0;border-bottom:1px solid var(--line)}
+    .ol-orbit__ntitle{font-size:13px}
+  }
+  @media(max-width:640px){
+    #ol-hero{align-items:flex-start;padding-top:calc(88px + 1cm);padding-bottom:56px;min-height:100svh}
+    #ol-hero .wrap > div{gap:22px !important}
+    .ol-hero__chips{gap:8px}
+    .ol-hud{gap:14px;align-items:flex-start}
+    #ol-fallback{place-items:start center;padding-top:9vh}
+    #ol-fallback svg{width:76vw}
+  }
+  @media(max-width:560px){
+    .ol-footer__grid{grid-template-columns:1fr}
+    .ol-console__body{grid-template-columns:1fr}
+    .ol-console__read{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:14px}
+  }
+  @media(pointer:coarse){#ol-cursor{display:none !important}body.has-cursor,body.has-cursor *{cursor:auto}}
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+    #ol-fallback svg{animation:none}
+  }
+</style>
+</helmet>
+
+<canvas id="ol-gl" aria-hidden="true"></canvas>
+<div id="ol-grid" aria-hidden="true"></div>
+<div id="ol-fallback" aria-hidden="true">
+  <svg viewBox="0 0 210 210" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#8FE3F0" stroke-width="1.2">
+    <polygon points="192.77,141.36 141.36,192.77 68.64,192.77 17.23,141.36 17.23,68.64 68.64,17.23 141.36,17.23 192.77,68.64" opacity=".9"></polygon>
+    <polygon points="192.77,141.36 68.64,192.77 17.23,68.64 141.36,17.23" opacity=".4"></polygon>
+    <polygon points="141.36,192.77 17.23,141.36 68.64,17.23 192.77,68.64" opacity=".4"></polygon>
+    <polygon points="192.77,141.36 17.23,141.36 68.64,17.23" opacity=".25"></polygon>
+  </svg>
+</div>
+
+<div id="ol-progress" aria-hidden="true"></div>
+<div id="ol-cursor" aria-hidden="true"><div id="ol-cur-dot"></div><div id="ol-cur-ring"></div></div>
+
+<div id="ol-pre" role="status" aria-label="Loading Octagon Labs">
+  <div class="ol-pre__box">
+    <svg class="ol-pre__iso" viewBox="0 0 210 210" fill="none" stroke="#F4F6F8" stroke-width="1.4">
+      <polygon points="192.77,141.36 141.36,192.77 68.64,192.77 17.23,141.36 17.23,68.64 68.64,17.23 141.36,17.23 192.77,68.64"></polygon>
+      <g class="web" stroke="#F4F6F8" stroke-width="1">
+        <polygon points="192.77,141.36 68.64,192.77 17.23,68.64 141.36,17.23"></polygon>
+        <polygon points="141.36,192.77 17.23,141.36 68.64,17.23 192.77,68.64"></polygon>
+        <line x1="192.77" y1="141.36" x2="17.23" y2="141.36"></line>
+        <line x1="141.36" y1="192.77" x2="68.64" y2="17.23"></line>
+        <line x1="68.64" y1="192.77" x2="141.36" y2="17.23"></line>
+        <line x1="17.23" y1="68.64" x2="192.77" y2="68.64"></line>
+      </g>
+    </svg>
+    <div class="ol-pre__wm mono">OCTAGON LABS</div>
+    <div class="ol-pre__bar"><i id="ol-pre-bar"></i></div>
+    <div class="ol-pre__pct mono"><span id="ol-pre-pct">000</span> · INITIALIZING SYSTEM</div>
+  </div>
+</div>
+
+<div id="ol-app">
+  <!-- NAV -->
+  <header class="ol-nav" id="ol-nav">
+    <div class="wrap">
+      <div class="ol-nav__in">
+        <a class="ol-nav__logo" href="#top" aria-label="Octagon Labs home" data-cursor>
+          <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Octagon Labs">
+            <g><polygon points="192.77,141.36 141.36,192.77 68.64,192.77 17.23,141.36 17.23,68.64 68.64,17.23 141.36,17.23 192.77,68.64" fill="none" stroke="#F4F6F8" stroke-width="4"></polygon>
+            <g stroke="#F4F6F8" stroke-width="2" opacity=".4"><line x1="192.77" y1="141.36" x2="68.64" y2="192.77"></line><line x1="192.77" y1="141.36" x2="17.23" y2="141.36"></line><line x1="192.77" y1="141.36" x2="17.23" y2="68.64"></line><line x1="192.77" y1="141.36" x2="68.64" y2="17.23"></line><line x1="192.77" y1="141.36" x2="141.36" y2="17.23"></line><line x1="141.36" y1="192.77" x2="17.23" y2="141.36"></line><line x1="141.36" y1="192.77" x2="17.23" y2="68.64"></line><line x1="141.36" y1="192.77" x2="68.64" y2="17.23"></line><line x1="141.36" y1="192.77" x2="141.36" y2="17.23"></line><line x1="141.36" y1="192.77" x2="192.77" y2="68.64"></line><line x1="68.64" y1="192.77" x2="17.23" y2="68.64"></line><line x1="68.64" y1="192.77" x2="68.64" y2="17.23"></line><line x1="68.64" y1="192.77" x2="141.36" y2="17.23"></line><line x1="68.64" y1="192.77" x2="192.77" y2="68.64"></line><line x1="17.23" y1="141.36" x2="68.64" y2="17.23"></line><line x1="17.23" y1="141.36" x2="141.36" y2="17.23"></line><line x1="17.23" y1="141.36" x2="192.77" y2="68.64"></line><line x1="17.23" y1="68.64" x2="141.36" y2="17.23"></line><line x1="17.23" y1="68.64" x2="192.77" y2="68.64"></line><line x1="68.64" y1="17.23" x2="192.77" y2="68.64"></line></g></g>
+            <g font-family="Helvetica,Arial,sans-serif" font-weight="700"><text x="230" y="112" font-size="46" letter-spacing="3" fill="#F4F6F8">OCTAGON</text><text x="231" y="140" font-size="20" letter-spacing="10" fill="#F4F6F8">LABS</text></g>
+          </svg>
+        </a>
+        <nav class="ol-nav__links" aria-label="Primary">
+          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+            <a class="ol-nav__link" href="{{ n.href }}" data-navlink data-cursor>{{ n.label }}</a>
+          </sc-for>
+        </nav>
+        <div class="ol-nav__right">
+          <div class="ol-lang" role="group" aria-label="Language">
+            <button type="button" class="{{ enCls }}" onClick="{{ setEN }}" data-cursor>EN</button>
+            <button type="button" class="{{ esCls }}" onClick="{{ setES }}" data-cursor>ES</button>
+          </div>
+          <button class="ol-burger" type="button" aria-label="Open menu" aria-expanded="false" onClick="{{ openMenu }}"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE MENU -->
+  <div id="ol-menu" aria-hidden="true">
+    <div class="ol-menu__top">
+      <svg width="150" viewBox="0 0 640 220" aria-hidden="true"><g><polygon points="192.77,141.36 141.36,192.77 68.64,192.77 17.23,141.36 17.23,68.64 68.64,17.23 141.36,17.23 192.77,68.64" fill="none" stroke="#F4F6F8" stroke-width="4"></polygon><g stroke="#F4F6F8" stroke-width="2" opacity=".4"><line x1="192.77" y1="141.36" x2="68.64" y2="192.77"></line><line x1="192.77" y1="141.36" x2="17.23" y2="141.36"></line><line x1="192.77" y1="141.36" x2="17.23" y2="68.64"></line><line x1="192.77" y1="141.36" x2="68.64" y2="17.23"></line><line x1="192.77" y1="141.36" x2="141.36" y2="17.23"></line><line x1="141.36" y1="192.77" x2="17.23" y2="141.36"></line><line x1="141.36" y1="192.77" x2="17.23" y2="68.64"></line><line x1="141.36" y1="192.77" x2="68.64" y2="17.23"></line><line x1="141.36" y1="192.77" x2="141.36" y2="17.23"></line><line x1="141.36" y1="192.77" x2="192.77" y2="68.64"></line><line x1="68.64" y1="192.77" x2="17.23" y2="68.64"></line><line x1="68.64" y1="192.77" x2="68.64" y2="17.23"></line><line x1="68.64" y1="192.77" x2="141.36" y2="17.23"></line><line x1="68.64" y1="192.77" x2="192.77" y2="68.64"></line><line x1="17.23" y1="141.36" x2="68.64" y2="17.23"></line><line x1="17.23" y1="141.36" x2="141.36" y2="17.23"></line><line x1="17.23" y1="141.36" x2="192.77" y2="68.64"></line><line x1="17.23" y1="68.64" x2="141.36" y2="17.23"></line><line x1="17.23" y1="68.64" x2="192.77" y2="68.64"></line><line x1="68.64" y1="17.23" x2="192.77" y2="68.64"></line></g></g><g font-family="Helvetica,Arial,sans-serif" font-weight="700"><text x="230" y="112" font-size="46" letter-spacing="3" fill="#F4F6F8">OCTAGON</text><text x="231" y="140" font-size="20" letter-spacing="10" fill="#F4F6F8">LABS</text></g></svg>
+      <button class="ol-menu__close" type="button" aria-label="Close menu" onClick="{{ closeMenu }}">✕</button>
+    </div>
+    <nav class="ol-menu__links" aria-label="Mobile">
+      <sc-for list="{{ navIdx }}" as="n" hint-placeholder-count="5">
+        <a class="ol-menu__link" href="{{ n.href }}" onClick="{{ closeMenu }}"><span class="mono">{{ n.idx }}</span>{{ n.label }}</a>
+      </sc-for>
+    </nav>
+    <div class="ol-menu__foot mono">
+      <span>{{ config.location }}</span>
+      <span class="ol-status"><i></i>{{ c.footer.status }}</span>
+    </div>
+    <svg class="ol-menu__iso" viewBox="0 0 210 210" fill="none" stroke="#F4F6F8" stroke-width="1.2" aria-hidden="true"><polygon points="192.77,141.36 141.36,192.77 68.64,192.77 17.23,141.36 17.23,68.64 68.64,17.23 141.36,17.23 192.77,68.64"></polygon><polygon points="192.77,141.36 68.64,192.77 17.23,68.64 141.36,17.23"></polygon><polygon points="141.36,192.77 17.23,141.36 68.64,17.23 192.77,68.64"></polygon></svg>
+  </div>
+
+  <main id="top">
+    <!-- HERO -->
+    <section id="ol-hero" data-core-scale="1" data-core-opacity=".8" aria-label="Intro">
+      <div class="ol-hero__veil" aria-hidden="true"></div>
+      <div class="wrap" style="width:100%">
+        <div style="display:flex;flex-direction:column;gap:clamp(26px,4vw,44px)">
+          <h1 class="ol-hero__title" data-lines>
+            <sc-for list="{{ c.hero.titleLines }}" as="line" hint-placeholder-count="3">
+              <span class="ol-line"><span class="ol-line__i">{{ line.t }}</span></span>
+            </sc-for>
+          </h1>
+          <p data-hero-fade style="max-width:56ch;color:var(--dim);font-size:clamp(16px,1.8vw,21px);line-height:1.65">{{ c.hero.sub }}</p>
+          <div data-hero-fade style="display:flex;flex-wrap:wrap;gap:14px">
+            <button type="button" class="ol-cta ol-cta--solid" onClick="{{ goProjects }}" data-cursor>{{ c.hero.cta1 }}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <button type="button" class="ol-cta ol-cta--ghost" onClick="{{ goLab }}" data-cursor>{{ c.hero.cta2 }}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="ol-hud mono" data-hero-fade>
+            <span class="ol-scrollhint"><i></i>{{ c.hero.scrollHint }}</span>
+            <span>{{ config.coords }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MANIFESTO -->
+    <section id="manifesto" class="ol-sec" data-core-scale="1.05" data-core-opacity=".26" data-screen-label="Manifesto">
+      <div class="wrap">
+        <div class="ol-kicker mono" data-reveal>{{ c.manifesto.kicker }}</div>
+        <h2 class="ol-manifesto__lead" style="margin-top:34px" data-lines>
+          <sc-for list="{{ c.manifesto.lines }}" as="line" hint-placeholder-count="6">
+            <span class="ol-line"><span class="ol-line__i {{ line.cls }}">{{ line.t }}</span></span>
+          </sc-for>
+        </h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(24px,4vw,64px);margin-top:clamp(44px,6vw,80px)">
+          <p class="ol-manifesto__body" data-reveal>{{ c.manifesto.body }}</p>
+          <p class="ol-manifesto__body" data-reveal>{{ c.manifesto.body2 }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="ol-sec" data-core-scale=".8" data-core-opacity=".18" data-screen-label="Projects">
+      <div class="wrap">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:20px">
+          <div>
+            <div class="ol-kicker mono" data-reveal>{{ c.projects.kicker }}</div>
+            <h2 class="ol-h2" style="margin-top:22px" data-reveal>{{ c.projects.title }}</h2>
+          </div>
+          <p style="max-width:38ch;color:var(--dim);font-size:15px;line-height:1.6" data-reveal>{{ c.projects.sub }}</p>
+        </div>
+        <sc-for list="{{ projects }}" as="p" hint-placeholder-count="4">
+          <article class="ol-proj {{ p.rev }}" data-accent="{{ p.accent }}" style="--pa:{{ p.accent }}">
+            <div class="ol-proj__info" data-reveal>
+              <div class="ol-proj__num mono">{{ p.num }} / {{ p.name }}</div>
+              <h3 class="ol-proj__name">{{ p.name }}</h3>
+              <p class="ol-proj__tag">{{ p.tagline }}</p>
+              <p class="ol-proj__desc">{{ p.description }}</p>
+              <div class="ol-proj__tags">
+                <sc-for list="{{ p.industry }}" as="tag" hint-placeholder-count="4">
+                  <span class="ol-ptag">{{ tag }}</span>
+                </sc-for>
+              </div>
+              <a class="ol-proj__link" href="{{ p.linkHref }}" target="{{ p.linkTarget }}" rel="noopener" data-cursor>{{ p.linkLabel }}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg>
+              </a>
+            </div>
+            <div class="ol-proj__media" data-reveal>
+              <div class="ol-console">
+                <div class="ol-console__bar">
+                  <div class="ol-console__dots"><i></i><i></i><i></i></div>
+                  <span class="ol-console__id mono">{{ p.slug }}</span>
+                </div>
+                <sc-if value="{{ p.hasShot }}" hint-placeholder-val="{{ true }}">
+                  <div class="ol-console__shot {{ p.shotCls }}">
+                    <img src="{{ p.shot }}" alt="{{ p.name }} interface" loading="lazy">
+                  </div>
+                </sc-if>
+                <sc-if value="{{ p.noShot }}">
+                <div class="ol-console__body">
+                  <div class="ol-console__viz">
+                    <svg viewBox="0 0 210 210" fill="none" stroke-width="1.4">
+                      <polygon class="oc-edge" points="192.77,141.36 141.36,192.77 68.64,192.77 17.23,141.36 17.23,68.64 68.64,17.23 141.36,17.23 192.77,68.64"></polygon>
+                      <g class="oc-web" stroke-width="1">
+                        <polygon points="192.77,141.36 68.64,192.77 17.23,68.64 141.36,17.23"></polygon>
+                        <polygon points="141.36,192.77 17.23,141.36 68.64,17.23 192.77,68.64"></polygon>
+                        <line x1="192.77" y1="141.36" x2="17.23" y2="141.36"></line>
+                        <line x1="141.36" y1="192.77" x2="68.64" y2="17.23"></line>
+                        <line x1="68.64" y1="192.77" x2="141.36" y2="17.23"></line>
+                        <line x1="17.23" y1="68.64" x2="192.77" y2="68.64"></line>
+                      </g>
+                      <g class="oc-node"><circle cx="192.77" cy="141.36" r="4"></circle><circle cx="141.36" cy="192.77" r="4"></circle><circle cx="68.64" cy="192.77" r="4"></circle><circle cx="17.23" cy="141.36" r="4"></circle><circle cx="17.23" cy="68.64" r="4"></circle><circle cx="68.64" cy="17.23" r="4"></circle><circle cx="141.36" cy="17.23" r="4"></circle><circle cx="192.77" cy="68.64" r="4"></circle></g>
+                    </svg>
+                  </div>
+                  <div class="ol-console__read mono">
+                    <div class="ol-console__row"><span class="ol-console__k">{{ c.projects.metaCat }}</span><span class="ol-console__v">{{ p.cat }}</span></div>
+                    <div class="ol-console__row"><span class="ol-console__k">{{ c.projects.metaStack }}</span><span class="ol-console__v">{{ p.stack }}</span></div>
+                    <div class="ol-console__row"><span class="ol-console__k">{{ c.projects.metaStatus }}</span><span class="ol-console__status"><i></i>{{ p.status }}</span></div>
+                  </div>
+                </div>
+                </sc-if>
+              </div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section id="process" class="ol-sec" data-core-scale=".85" data-core-opacity=".24" data-screen-label="Process">
+      <div class="wrap">
+        <div style="text-align:center;margin-bottom:clamp(40px,6vw,72px)">
+          <div class="ol-kicker mono" data-reveal style="justify-content:center">{{ c.process.kicker }}</div>
+          <h2 class="ol-h2" style="margin-top:22px" data-reveal>{{ c.process.title }}</h2>
+          <p style="color:var(--dim);margin-top:16px;max-width:52ch;margin-inline:auto" data-reveal>{{ c.process.sub }}</p>
+        </div>
+        <div class="ol-orbit" onMouseLeave="{{ procLeave }}" data-reveal>
+          <svg class="ol-orbit__svg" viewBox="0 0 100 100" aria-hidden="true"><circle class="ol-orbit__ring" cx="50" cy="50" r="42"></circle></svg>
+          <div class="ol-orbit__center" aria-live="polite">
+            <div class="ol-orbit__cnum mono">{{ activeProc.num }}</div>
+            <div class="ol-orbit__ctitle">{{ activeProc.title }}</div>
+            <p class="ol-orbit__cdesc">{{ activeProc.desc }}</p>
+          </div>
+          <sc-for list="{{ procNodes }}" as="s" hint-placeholder-count="6">
+            <button type="button" class="{{ s.cls }}" style="{{ s.style }}" onMouseEnter="{{ s.onEnter }}" onFocus="{{ s.onEnter }}" onClick="{{ s.onEnter }}" data-cursor>
+              <span class="ol-orbit__dot mono">{{ s.num }}</span>
+              <span class="ol-orbit__ntitle">{{ s.title }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPABILITIES -->
+    <section id="capabilities" class="ol-sec" data-core-scale=".7" data-core-opacity=".15" data-screen-label="Capabilities">
+      <div class="wrap">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(30px,4vw,52px)">
+          <div>
+            <div class="ol-kicker mono" data-reveal>{{ c.caps.kicker }}</div>
+            <h2 class="ol-h2" style="margin-top:22px" data-reveal>{{ c.caps.title }}</h2>
+          </div>
+          <span class="mono" style="color:var(--faint);font-size:12px;letter-spacing:.2em" data-reveal>10 · CORE DISCIPLINES</span>
+        </div>
+        <div class="ol-caps">
+          <sc-for list="{{ caps }}" as="cap" hint-placeholder-count="10">
+            <div class="ol-cap" data-reveal>
+              <span class="ol-cap__code mono">{{ cap.code }}</span>
+              <h3 class="ol-cap__name">{{ cap.name }}</h3>
+              <p class="ol-cap__desc">{{ cap.desc }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- METRICS -->
+    <section id="metrics" class="ol-sec" data-core-scale=".9" data-core-opacity=".22" data-screen-label="Metrics">
+      <div class="wrap">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(30px,4vw,52px)">
+          <div>
+            <div class="ol-kicker mono" data-reveal>{{ c.metrics.kicker }}</div>
+            <h2 class="ol-h2" style="margin-top:22px" data-reveal>{{ c.metrics.title }}</h2>
+          </div>
+          <span class="mono" style="color:var(--faint);font-size:12px;letter-spacing:.14em" data-reveal>◇ {{ c.metrics.note }}</span>
+        </div>
+        <div class="ol-metrics">
+          <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="6">
+            <div class="ol-metric" data-reveal>
+              <div class="ol-metric__num"><span class="ol-metric__num-v" data-num="{{ m.num }}" data-dec="{{ m.dec }}" data-pad="{{ m.pad }}" data-suffix="{{ m.suffix }}">{{ m.display }}</span></div>
+              <div class="ol-metric__label">{{ m.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHILOSOPHY -->
+    <section id="philosophy" class="ol-sec" data-core-scale="1" data-core-opacity=".28" data-screen-label="Philosophy">
+      <div class="wrap">
+        <div class="ol-kicker mono" data-reveal>{{ c.philo.kicker }}</div>
+        <h2 class="ol-h2" style="margin-top:22px;margin-bottom:clamp(24px,4vw,44px)" data-reveal>{{ c.philo.title }}</h2>
+        <div class="ol-philo">
+          <sc-for list="{{ philos }}" as="ph" hint-placeholder-count="5">
+            <div class="ol-phi" data-reveal>
+              <span class="ol-phi__num mono">{{ ph.num }}</span>
+              <div class="ol-phi__wrap">
+                <span class="ol-phi__title">{{ ph.title }}</span>
+                <span class="ol-phi__desc">{{ ph.desc }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="ol-sec" data-core-scale=".75" data-core-opacity=".17" data-screen-label="About">
+      <div class="wrap">
+        <div class="ol-about">
+          <div>
+            <div class="ol-kicker mono" data-reveal>{{ c.about.kicker }}</div>
+            <h2 class="ol-h2" style="margin-top:22px" data-reveal>{{ c.about.title }}</h2>
+          </div>
+          <div>
+            <sc-for list="{{ c.about.paras }}" as="para" hint-placeholder-count="2">
+              <p class="ol-about__p" data-reveal>{{ para.t }}</p>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="ol-sec" data-core-scale="1.05" data-core-opacity=".32" data-screen-label="Contact">
+      <div class="wrap">
+        <div class="ol-kicker mono" data-reveal>{{ c.contact.kicker }}</div>
+        <h2 class="ol-contact__title" style="margin-top:28px;max-width:18ch" data-lines>
+          <sc-for list="{{ c.contact.titleLines }}" as="line" hint-placeholder-count="2">
+            <span class="ol-line"><span class="ol-line__i">{{ line.t }}</span></span>
+          </sc-for>
+        </h2>
+        <p style="color:var(--dim);margin-top:20px;max-width:48ch;font-size:clamp(15px,1.6vw,19px)" data-reveal>{{ c.contact.subtitle }}</p>
+
+        <div style="margin-top:clamp(36px,5vw,56px)">
+          <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+            <form class="ol-form" id="ol-form" novalidate onSubmit="{{ onSubmit }}">
+              <div class="ol-field">
+                <label for="ol-f-name">{{ c.contact.f.name }}</label>
+                <input class="ol-input" id="ol-f-name" name="name" type="text" placeholder="{{ c.contact.ph.name }}" autocomplete="name" aria-describedby="ol-e-name">
+                <span class="ol-err mono" id="ol-e-name">{{ c.contact.err.name }}</span>
+              </div>
+              <div class="ol-field">
+                <label for="ol-f-company">{{ c.contact.f.company }}</label>
+                <input class="ol-input" id="ol-f-company" name="company" type="text" placeholder="{{ c.contact.ph.company }}" autocomplete="organization">
+              </div>
+              <div class="ol-field">
+                <label for="ol-f-email">{{ c.contact.f.email }}</label>
+                <input class="ol-input" id="ol-f-email" name="email" type="email" placeholder="{{ c.contact.ph.email }}" autocomplete="email" aria-describedby="ol-e-email">
+                <span class="ol-err mono" id="ol-e-email">{{ c.contact.err.email }}</span>
+              </div>
+              <div class="ol-field">
+                <label for="ol-f-type">{{ c.contact.f.type }}</label>
+                <select class="ol-input" id="ol-f-type" name="type">
+                  <option value="" disabled selected>{{ c.contact.typePlaceholder }}</option>
+                  <sc-for list="{{ c.contact.types }}" as="t" hint-placeholder-count="6">
+                    <option value="{{ t.t }}">{{ t.t }}</option>
+                  </sc-for>
+                </select>
+              </div>
+              <div class="ol-field ol-field--full">
+                <label for="ol-f-message">{{ c.contact.f.message }}</label>
+                <textarea class="ol-input" id="ol-f-message" name="message" placeholder="{{ c.contact.ph.message }}" aria-describedby="ol-e-message"></textarea>
+                <span class="ol-err mono" id="ol-e-message">{{ c.contact.err.message }}</span>
+              </div>
+              <div class="ol-form__foot">
+                <span class="ol-form__direct">{{ c.contact.orDirect }} <a href="{{ waLink }}" target="_blank" rel="noopener">WhatsApp</a></span>
+                <button type="submit" class="ol-cta ol-cta--solid" data-cursor>{{ c.contact.submit }}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+            </form>
+          </sc-if>
+          <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+            <div class="ol-success">
+              <svg class="ol-success__iso" viewBox="0 0 210 210" fill="none" stroke="var(--acc)" stroke-width="1.6" aria-hidden="true"><polygon points="192.77,141.36 141.36,192.77 68.64,192.77 17.23,141.36 17.23,68.64 68.64,17.23 141.36,17.23 192.77,68.64"></polygon><polygon points="192.77,141.36 68.64,192.77 17.23,68.64 141.36,17.23"></polygon><polygon points="141.36,192.77 17.23,141.36 68.64,17.23 192.77,68.64"></polygon></svg>
+              <h3>{{ c.contact.successTitle }}</h3>
+              <p>{{ c.contact.successBody }} <a href="{{ waLink }}" target="_blank" rel="noopener">WhatsApp</a>.</p>
+              <button type="button" class="ol-cta ol-cta--ghost" onClick="{{ resetForm }}" data-cursor>{{ c.contact.successCta }}</button>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="ol-footer" data-core-scale=".8" data-core-opacity=".24">
+    <div class="wrap">
+      <div class="ol-footer__grid">
+        <div>
+          <div class="ol-footer__logo">
+            <svg viewBox="0 0 640 220" aria-label="Octagon Labs"><g><polygon points="192.77,141.36 141.36,192.77 68.64,192.77 17.23,141.36 17.23,68.64 68.64,17.23 141.36,17.23 192.77,68.64" fill="none" stroke="#F4F6F8" stroke-width="4"></polygon><g stroke="#F4F6F8" stroke-width="2" opacity=".38"><line x1="192.77" y1="141.36" x2="68.64" y2="192.77"></line><line x1="192.77" y1="141.36" x2="17.23" y2="141.36"></line><line x1="192.77" y1="141.36" x2="17.23" y2="68.64"></line><line x1="192.77" y1="141.36" x2="68.64" y2="17.23"></line><line x1="192.77" y1="141.36" x2="141.36" y2="17.23"></line><line x1="141.36" y1="192.77" x2="17.23" y2="141.36"></line><line x1="141.36" y1="192.77" x2="17.23" y2="68.64"></line><line x1="141.36" y1="192.77" x2="68.64" y2="17.23"></line><line x1="141.36" y1="192.77" x2="141.36" y2="17.23"></line><line x1="141.36" y1="192.77" x2="192.77" y2="68.64"></line><line x1="68.64" y1="192.77" x2="17.23" y2="68.64"></line><line x1="68.64" y1="192.77" x2="68.64" y2="17.23"></line><line x1="68.64" y1="192.77" x2="141.36" y2="17.23"></line><line x1="68.64" y1="192.77" x2="192.77" y2="68.64"></line><line x1="17.23" y1="141.36" x2="68.64" y2="17.23"></line><line x1="17.23" y1="141.36" x2="141.36" y2="17.23"></line><line x1="17.23" y1="141.36" x2="192.77" y2="68.64"></line><line x1="17.23" y1="68.64" x2="141.36" y2="17.23"></line><line x1="17.23" y1="68.64" x2="192.77" y2="68.64"></line><line x1="68.64" y1="17.23" x2="192.77" y2="68.64"></line></g></g><g font-family="Helvetica,Arial,sans-serif" font-weight="700"><text x="230" y="112" font-size="46" letter-spacing="3" fill="#F4F6F8">OCTAGON</text><text x="231" y="140" font-size="20" letter-spacing="10" fill="#F4F6F8">LABS</text></g></svg>
+          </div>
+          <p class="ol-footer__tag">{{ c.footer.tagline }}</p>
+          <div class="ol-status mono" style="margin-top:22px"><i></i>{{ c.footer.status }}</div>
+        </div>
+        <div class="ol-footer__col">
+          <h4 class="mono">{{ c.footer.navTitle }}</h4>
+          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+            <a href="{{ n.href }}" data-cursor>{{ n.label }}</a>
+          </sc-for>
+        </div>
+      </div>
+      <div class="ol-footer__bar mono">
+        <span>{{ c.footer.rights }}</span>
+        <div class="ol-footer__legal">
+          <a href="#" data-cursor>{{ c.footer.privacy }}</a>
+          <a href="#" data-cursor>{{ c.footer.terms }}</a>
+          <span>{{ config.location }}</span>
+        </div>
+        <a class="ol-backtop" href="#top" data-cursor>{{ c.footer.backTop }}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startLang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;es&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'es'&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#FF9D8A&quot;,&quot;options&quot;:[&quot;#8FE3F0&quot;,&quot;#7FB2FF&quot;,&quot;#79E6A6&quot;,&quot;#F2D479&quot;,&quot;#FF9D8A&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;enable3D&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;reduceMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Experience&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const start = (props && props.startLang) === 'es' ? 'es' : 'en';
+    this.state = { lang: start, activeStep: 0, sent: false };
+    this._raf = 0; this._craf = 0; this._procHover = false;
+    this._ptr = { x: 0, y: 0 }; this._ring = { x: -100, y: -100 }; this._dot = { x: -100, y: -100 };
+    this._sts = []; this.core = null;
+  }
+
+  /* ---------------- CONTENT ---------------- */
+  data(){
+    const cfg = {
+      email: 'hello@octagonlabs.com',
+      whatsapp: '528114696951',
+      location: 'Monterrey, México',
+      coords: '25.6866° N / 100.3161° W',
+      socials: [
+        { label: 'LinkedIn', href: '#' },
+        { label: 'X / Twitter', href: '#' },
+        { label: 'GitHub', href: '#' },
+        { label: 'Instagram', href: '#' }
+      ]
+    };
+    const acc = { turbo:'#7FB2FF', wms:'#74D6E6', guias:'#79E6A6', timbra:'#F2D479', fankit:'#FF9D8A' };
+    const projBase = [
+      { num:'01', name:'TurboShip Carrier', slug:'PRJ-01 · TURBOSHIP-CARRIER', accent:acc.turbo,  stack:'White-label · Multi-carrier · APIs', shot:'public/shots/turboship-carrier.jpg', url:'https://turboship.mx/carrier/' },
+      { num:'02', name:'TurboShip',         slug:'PRJ-02 · TURBOSHIP-WMS',     accent:acc.wms,    stack:'WMS · OMS · Integrations', shot:'public/shots/turboship.jpg', url:'https://turboship.mx/' },
+      { num:'03', name:'Pick n Pack',      slug:'PRJ-03 · PICK-N-PACK',      accent:acc.guias,  stack:'Warehouse Agent · WMS · Labels', shot:'public/shots/pick-n-pack.jpg' },
+      { num:'04', name:'Timbra Chat',       slug:'PRJ-04 · TIMBRA-CHAT',       accent:acc.timbra, stack:'LLM · CFDI · Chat', shot:'public/shots/timbrachat.jpg', mobile:true, url:'https://timbrachat.ai' },
+      { num:'05', name:'FanKit',            slug:'PRJ-05 · FANKIT',            accent:acc.fankit, stack:'Wallet · Mobile · APIs', shot:'public/shots/fankit.jpg', mobile:true, url:'https://fankit.io' }
+    ];
+    const EN = {
+      nav: [ {label:'Labs',href:'#manifesto'},{label:'Projects',href:'#projects'},{label:'Process',href:'#process'},{label:'About',href:'#about'},{label:'Contact',href:'#contact'} ],
+      hero: {
+        tag1:'Independent Technology Lab', tag2:'Research · Design · Engineering', scrollHint:'Scroll',
+        titleLines:[{t:'We build the systems,'},{t:'products and companies'},{t:'of the future.'}],
+        sub:'Octagon Labs is a research and technology-development house that turns complex opportunities into real digital products.',
+        cta1:'Explore our projects', cta2:'Enter the lab'
+      },
+      manifesto: {
+        kicker:'01 — Manifesto',
+        lines:[{t:'We do not wait'},{t:'for the future —',cls:'soft'},{t:'we research it,'},{t:'design it,'},{t:'and turn it'},{t:'into product.'}],
+        body:'Octagon Labs brings together strategy, design, software, automation, artificial intelligence and operations to develop complete solutions — from the first question to a system running in production.',
+        body2:'We are the core that investigates opportunities, designs solutions, builds digital products, tests business models, and turns complex ideas into functioning companies.'
+      },
+      projects: {
+        kicker:'02 — Projects', title:'A portfolio, not a pitch.',
+        sub:'Products researched, designed, built and operated inside the lab.',
+        explore:'Explore project', metaCat:'CATEGORY', metaStack:'STACK', metaStatus:'STATUS',
+        items:[
+          { tagline:'White-label shipping labels for resellers & enterprise distribution.', description:'A white-label platform that lets shipping-label resellers and enterprise companies issue, price and manage labels at scale — built for complex, multi-carrier distribution needs.', cat:'Logistics', status:'Live', industry:['White Label','Logistics','Enterprise','Multi-carrier'] },
+          { tagline:'A WMS and order centralizer for operations at scale.', description:'A warehouse-management system and order centralizer that unifies inventory, fulfillment and orders from every sales channel into a single operational view.', cat:'WMS · OMS', status:'Live', industry:['WMS','Order Management','Logistics','Automation'] },
+          { name:'Pick n Pack Agent', tagline:'Ship straight from the warehouse floor — no external label platform.', description:'An agent that lets a warehouse operator run the whole flow themselves — from receiving the order, to picking and packing it, to leaving it at the door ready to ship — without generating the label on a platform separate from the one they already use.', cat:'AI · Logistics', status:'Live', industry:['AI Agents','Warehouse','Fulfillment','Automation'] },
+          { tagline:'Invoicing on autopilot — just send it over WhatsApp.', description:'An agent that makes your invoices for you: send what you need billed over WhatsApp and it returns the invoice by email and inside your dashboard. Connect additional channels to generate invoices via API.', cat:'Fintech', status:'Beta', industry:['Fintech','Tax Technology','AI Agents','API'] },
+          { tagline:'Loyalty, rewards & digital experiences.', description:'A loyalty, rewards and digital-wallet platform that connects brands and consumers through experiences worth coming back to.', cat:'Loyalty', status:'Early access', industry:['Loyalty','Digital Wallet','Consumer Technology','Rewards'] }
+        ]
+      },
+      process: {
+        kicker:'03 — How we work', title:'One continuous system.', sub:'Six modes the lab moves through, over and over.',
+        steps:[
+          {num:'01',title:'Observe',desc:'We map the problem space, the market and the friction worth removing.'},
+          {num:'02',title:'Research',desc:'We validate opportunities with data, prototypes and real constraints.'},
+          {num:'03',title:'Design',desc:'We shape systems, interfaces and business models with intent.'},
+          {num:'04',title:'Build',desc:'We engineer production software, infrastructure and intelligent agents.'},
+          {num:'05',title:'Launch',desc:'We ship, integrate and operate the product in the real world.'},
+          {num:'06',title:'Scale',desc:'We measure, automate and grow what works into a company.'}
+        ]
+      },
+      caps: {
+        kicker:'04 — Capabilities', title:'What the lab can build.',
+        items:[
+          {code:'C-01',name:'Product Strategy',desc:'From opportunity to roadmap and business model.'},
+          {code:'C-02',name:'Software Engineering',desc:'Production-grade systems, APIs and infrastructure.'},
+          {code:'C-03',name:'Artificial Intelligence',desc:'Models and agents applied to real workflows.'},
+          {code:'C-04',name:'Automation',desc:'Removing manual work from operations end to end.'},
+          {code:'C-05',name:'UX/UI Design',desc:'Interfaces that make complex systems feel simple.'},
+          {code:'C-06',name:'Logistics Technology',desc:'Shipping, fulfillment and carrier integration.'},
+          {code:'C-07',name:'Conversational Interfaces',desc:'Chat and voice as first-class product surfaces.'},
+          {code:'C-08',name:'Infrastructure',desc:'Servers, pipelines and cloud the whole system runs on.'},
+          {code:'C-09',name:'Platform Development',desc:'Multi-tenant products built to scale.'},
+          {code:'C-10',name:'Venture Building',desc:'Turning validated products into companies.'}
+        ]
+      },
+      metrics: {
+        kicker:'05 — Signals', title:'The lab in numbers.', note:'Live metrics',
+        items:[
+          {num:15,dec:0,pad:0,suffix:'+',display:'15+',label:'Products launched'},
+          {num:12.4,dec:1,pad:0,suffix:'M',display:'12.4M',label:'Transactions processed'},
+          {num:100,dec:0,pad:0,suffix:'%',display:'100%',label:'Self-sustainable'},
+          {num:7,dec:0,pad:0,suffix:'+',display:'7+',label:'Years building technology'}
+        ]
+      },
+      philo: {
+        kicker:'06 — Philosophy', title:'How we decide.',
+        items:[
+          {num:'I',title:'Build real things',desc:'Ideas matter when they run in production.'},
+          {num:'II',title:'Solve meaningful problems',desc:'We choose the friction worth removing.'},
+          {num:'III',title:'Design for scale',desc:'Every system is built to grow.'},
+          {num:'IV',title:'Experiment responsibly',desc:'We move fast without breaking trust.'},
+          {num:'V',title:'Technology with purpose',desc:'Tools should serve people and business.'}
+        ]
+      },
+      about: {
+        kicker:'07 — About', title:'A technology venture studio, based in Monterrey.',
+        paras:[
+          {t:'Octagon Labs is an independent technology venture studio born in Monterrey, México. We identify opportunities, design technology, build digital products and help turn them into scalable companies.'},
+          {t:'Strategy, design, engineering, artificial intelligence and operations live under one roof, working as a single system. That is how ideas become products, and products become companies.'}
+        ],
+        teamKicker:'The team', teamNote:'profiles coming soon.', soon:'SOON'
+      },
+      contact: {
+        kicker:'08 — Contact',
+        titleLines:[{t:'The next system'},{t:'starts with a question.'}],
+        subtitle:'Tell us what you want to build. We read every message.',
+        f:{name:'Name',company:'Company',email:'Email',type:'Project type',message:'Message'},
+        ph:{name:'Your name',company:'Company (optional)',email:'you@company.com',message:'Tell us about your project…'},
+        err:{name:'Please enter your name.',email:'Please enter a valid email.',message:'Please add a short message.'},
+        typePlaceholder:'Select a project type',
+        types:[{t:'Build a new product'},{t:'Automate an operation'},{t:'Develop a platform'},{t:'Artificial intelligence'},{t:'Strategic collaboration'},{t:'Other'}],
+        submit:'Send message', orDirect:'Or write to us directly',
+        successTitle:'Message received.', successBody:'Thank you — we read every message and will reply from', successCta:'Send another'
+      },
+      footer: {
+        tagline:'Research, design & technology from Monterrey.', status:'Systems Online',
+        navTitle:'Navigate', connectTitle:'Connect',
+        rights:'© 2026 Octagon Labs. All rights reserved.', privacy:'Privacy', terms:'Terms', backTop:'Back to top'
+      }
+    };
+    const ES = {
+      nav: [ {label:'El Lab',href:'#manifesto'},{label:'Proyectos',href:'#projects'},{label:'Proceso',href:'#process'},{label:'Nosotros',href:'#about'},{label:'Contacto',href:'#contact'} ],
+      hero: {
+        tag1:'Laboratorio de Tecnología Independiente', tag2:'Investigación · Diseño · Ingeniería', scrollHint:'Desliza',
+        titleLines:[{t:'Construimos los sistemas,'},{t:'productos y compañías'},{t:'del futuro.'}],
+        sub:'Octagon Labs es una casa de investigación y desarrollo tecnológico que transforma oportunidades complejas en productos digitales reales.',
+        cta1:'Explorar proyectos', cta2:'Conocer el laboratorio'
+      },
+      manifesto: {
+        kicker:'01 — Manifiesto',
+        lines:[{t:'No esperamos'},{t:'al futuro —',cls:'soft'},{t:'lo investigamos,'},{t:'lo diseñamos'},{t:'y lo convertimos'},{t:'en producto.'}],
+        body:'Octagon Labs reúne estrategia, diseño, software, automatización, inteligencia artificial y operación para desarrollar soluciones completas — desde la primera pregunta hasta un sistema operando en producción.',
+        body2:'Somos el núcleo que investiga oportunidades, diseña soluciones, construye productos digitales, prueba modelos de negocio y convierte ideas complejas en compañías funcionales.'
+      },
+      projects: {
+        kicker:'02 — Proyectos', title:'Un portafolio, no una promesa.',
+        sub:'Productos investigados, diseñados, construidos y operados dentro del laboratorio.',
+        explore:'Ver proyecto', metaCat:'CATEGORÍA', metaStack:'STACK', metaStatus:'ESTATUS',
+        items:[
+          { tagline:'Guías de envío white-label para revendedores y distribución enterprise.', description:'Una plataforma white-label que permite a revendedores de guías y empresas enterprise emitir, cotizar y administrar guías a escala — pensada para necesidades de distribución complejas y multi-paquetería.', cat:'Logística', status:'En vivo', industry:['White Label','Logística','Enterprise','Multi-paquetería'] },
+          { tagline:'Un WMS y centralizador de pedidos para operar a escala.', description:'Un sistema de gestión de almacenes y centralizador de pedidos que unifica inventario, fulfillment y órdenes de todos los canales de venta en una sola vista operativa.', cat:'WMS · OMS', status:'En vivo', industry:['WMS','Gestión de Pedidos','Logística','Automatización'] },
+          { name:'Agente de Pick n Pack', tagline:'Envía desde el piso de la bodega — sin plataforma de guías externa.', description:'Un agente que permite a un operador de bodega gestionar todo el flujo por sí mismo — desde que recibe la orden, hasta surtir y empacar el pedido, y dejarlo en puerta listo para salir — sin generar la guía en una plataforma externa a la que ya utilizan.', cat:'IA · Logística', status:'En vivo', industry:['Agentes IA','Bodega','Fulfillment','Automatización'] },
+          { tagline:'Facturación en automático — solo envíala por WhatsApp.', description:'Un agente que hace las facturas por ti: envíale por WhatsApp lo que necesitas facturar y te devuelve la factura por correo y dentro del dashboard. Conecta canales adicionales para generar facturas por medio de API.', cat:'Fintech', status:'Beta', industry:['Fintech','Tecnología Fiscal','Agentes IA','API'] },
+          { tagline:'Lealtad, recompensas y experiencias digitales.', description:'Una plataforma de lealtad, recompensas y wallet digital que conecta marcas y consumidores con experiencias que invitan a volver.', cat:'Lealtad', status:'Acceso anticipado', industry:['Lealtad','Wallet Digital','Tecnología de Consumo','Recompensas'] }
+        ]
+      },
+      process: {
+        kicker:'03 — Cómo trabajamos', title:'Un sistema continuo.', sub:'Seis modos por los que el laboratorio se mueve, una y otra vez.',
+        steps:[
+          {num:'01',title:'Observamos',desc:'Mapeamos el problema, el mercado y la fricción que vale la pena eliminar.'},
+          {num:'02',title:'Investigamos',desc:'Validamos oportunidades con datos, prototipos y restricciones reales.'},
+          {num:'03',title:'Diseñamos',desc:'Damos forma a sistemas, interfaces y modelos de negocio con intención.'},
+          {num:'04',title:'Construimos',desc:'Desarrollamos software, infraestructura y agentes inteligentes en producción.'},
+          {num:'05',title:'Lanzamos',desc:'Lanzamos, integramos y operamos el producto en el mundo real.'},
+          {num:'06',title:'Escalamos',desc:'Medimos, automatizamos y escalamos lo que funciona hasta volverlo empresa.'}
+        ]
+      },
+      caps: {
+        kicker:'04 — Capacidades', title:'Lo que el laboratorio construye.',
+        items:[
+          {code:'C-01',name:'Estrategia de Producto',desc:'De la oportunidad al roadmap y el modelo de negocio.'},
+          {code:'C-02',name:'Ingeniería de Software',desc:'Sistemas, APIs e infraestructura de nivel producción.'},
+          {code:'C-03',name:'Inteligencia Artificial',desc:'Modelos y agentes aplicados a flujos reales.'},
+          {code:'C-04',name:'Automatización',desc:'Eliminamos el trabajo manual de las operaciones.'},
+          {code:'C-05',name:'Diseño UX/UI',desc:'Interfaces que hacen simple lo complejo.'},
+          {code:'C-06',name:'Tecnología Logística',desc:'Envíos, fulfillment e integración con paqueterías.'},
+          {code:'C-07',name:'Interfaces Conversacionales',desc:'Chat y voz como superficies de producto.'},
+          {code:'C-08',name:'Infraestructura',desc:'Servidores, pipelines y nube sobre los que corre el sistema.'},
+          {code:'C-09',name:'Desarrollo de Plataformas',desc:'Productos multi-tenant construidos para escalar.'},
+          {code:'C-10',name:'Venture Building',desc:'Convertimos productos validados en empresas.'}
+        ]
+      },
+      metrics: {
+        kicker:'05 — Señales', title:'El laboratorio en números.', note:'Métricas en vivo',
+        items:[
+          {num:15,dec:0,pad:0,suffix:'+',display:'15+',label:'Productos lanzados'},
+          {num:12.4,dec:1,pad:0,suffix:'M',display:'12.4M',label:'Transacciones procesadas'},
+          {num:100,dec:0,pad:0,suffix:'%',display:'100%',label:'Autosustentable'},
+          {num:7,dec:0,pad:0,suffix:'+',display:'7+',label:'Años construyendo tecnología'}
+        ]
+      },
+      philo: {
+        kicker:'06 — Filosofía', title:'Cómo decidimos.',
+        items:[
+          {num:'I',title:'Construir cosas reales',desc:'Las ideas importan cuando corren en producción.'},
+          {num:'II',title:'Resolver problemas que importan',desc:'Elegimos la fricción que vale la pena eliminar.'},
+          {num:'III',title:'Diseñar para escalar',desc:'Cada sistema se construye para crecer.'},
+          {num:'IV',title:'Experimentar con responsabilidad',desc:'Avanzamos rápido sin romper la confianza.'},
+          {num:'V',title:'Tecnología con propósito',desc:'Las herramientas deben servir a las personas y al negocio.'}
+        ]
+      },
+      about: {
+        kicker:'07 — Nosotros', title:'Un venture studio de tecnología, con base en Monterrey.',
+        paras:[
+          {t:'Octagon Labs es un venture studio de tecnología independiente nacido en Monterrey, México. Identificamos oportunidades, diseñamos tecnología, construimos productos digitales y ayudamos a convertirlos en compañías escalables.'},
+          {t:'Estrategia, diseño, ingeniería, inteligencia artificial y operación viven bajo un mismo techo, trabajando como un solo sistema. Así las ideas se vuelven producto, y el producto se vuelve compañía.'}
+        ],
+        teamKicker:'El equipo', teamNote:'perfiles próximamente.', soon:'PRONTO'
+      },
+      contact: {
+        kicker:'08 — Contacto',
+        titleLines:[{t:'Todo gran sistema'},{t:'comienza con una pregunta.'}],
+        subtitle:'Cuéntanos qué quieres construir. Leemos cada mensaje.',
+        f:{name:'Nombre',company:'Empresa',email:'Correo',type:'Tipo de proyecto',message:'Mensaje'},
+        ph:{name:'Tu nombre',company:'Empresa (opcional)',email:'tú@empresa.com',message:'Cuéntanos sobre tu proyecto…'},
+        err:{name:'Escribe tu nombre.',email:'Escribe un correo válido.',message:'Agrega un mensaje breve.'},
+        typePlaceholder:'Selecciona un tipo de proyecto',
+        types:[{t:'Crear un nuevo producto'},{t:'Automatizar una operación'},{t:'Desarrollar una plataforma'},{t:'Inteligencia artificial'},{t:'Colaboración estratégica'},{t:'Otro'}],
+        submit:'Enviar mensaje', orDirect:'O escríbenos directamente',
+        successTitle:'Mensaje recibido.', successBody:'Gracias — leemos cada mensaje y te responderemos desde', successCta:'Enviar otro'
+      },
+      footer: {
+        tagline:'Investigación, diseño y tecnología desde Monterrey.', status:'Sistemas en línea',
+        navTitle:'Navegación', connectTitle:'Conectar',
+        rights:'© 2026 Octagon Labs. Todos los derechos reservados.', privacy:'Privacidad', terms:'Términos', backTop:'Volver arriba'
+      }
+    };
+    return { cfg, projBase, tree: this.state.lang === 'es' ? ES : EN };
+  }
+
+  /* ---------------- RENDER VALS ---------------- */
+  renderVals(){
+    const { cfg, projBase, tree } = this.data();
+    const c = tree;
+    const isES = this.state.lang === 'es';
+    const setLang = (l) => { if (this.state.lang !== l) this.setState({ lang: l }); };
+
+    const projects = projBase.map((b, i) => Object.assign({}, b, c.projects.items[i], { rev: i % 2 === 1 ? 'ol-proj--rev' : '', hasShot: !!b.shot, noShot: !b.shot, shotCls: b.mobile ? 'ol-console__shot--mobile' : '', linkHref: b.url || 'https://wa.me/528114696951', linkTarget: '_blank', linkLabel: b.url ? (isES ? 'Visitar sitio' : 'Visit website') : (isES ? 'Hablar por WhatsApp' : 'Chat on WhatsApp') }));
+    const steps = c.process.steps;
+    const active = Math.max(0, Math.min(this.state.activeStep, steps.length - 1));
+    const procPull = [[0, 20], [-17.3, 10.1], [-17.3, -10.1], [0, -20], [17.3, -10.1], [17.3, 10.1]];
+    const procDesktop = typeof window !== 'undefined' && window.innerWidth > 820;
+    const procNodes = steps.map((s, i) => Object.assign({}, s, {
+      cls: 'ol-orbit__node' + (i === active ? ' is-active' : ''),
+      style: (i === active && procDesktop) ? ('transform:translate(-50%,-50%) translate(' + procPull[i][0] + 'px,' + procPull[i][1] + 'px) scale(.9);opacity:.9') : '',
+      onEnter: () => { this._procHover = true; if (this.state.activeStep !== i) this.setState({ activeStep: i }); }
+    }));
+    const navIdx = c.nav.map((n, i) => Object.assign({}, n, { idx: '0' + (i + 1) }));
+    const mailto = 'mailto:' + cfg.email;
+    const waText = isES ? 'Hola Octagon Labs, me gustaría platicar sobre un proyecto.' : "Hi Octagon Labs, I'd like to talk about a project.";
+    const waLink = 'https://wa.me/' + cfg.whatsapp + '?text=' + encodeURIComponent(waText);
+
+    return {
+      c, config: cfg, nav: c.nav, navIdx, socials: cfg.socials,
+      projects, caps: c.caps.items, metrics: c.metrics.items, philos: c.philo.items,
+      procNodes, activeProc: steps[active],
+      enCls: 'ol-langbtn' + (isES ? '' : ' on'), esCls: 'ol-langbtn' + (isES ? ' on' : ''),
+      setEN: () => setLang('en'), setES: () => setLang('es'),
+      openMenu: () => this.toggleMenu(true), closeMenu: () => this.toggleMenu(false),
+      goProjects: () => this.scrollTo('#projects'), goLab: () => this.openWA(),
+      procLeave: () => { this._procHover = false; },
+      onSubmit: (e) => this.onSubmit(e), resetForm: () => this.setState({ sent: false }),
+      sent: !!this.state.sent, notSent: !this.state.sent, mailto, waLink
+    };
+  }
+
+  /* ---------------- LIFECYCLE ---------------- */
+  componentDidMount(){
+    this.reduced = !!(this.props && this.props.reduceMotion) ||
+      (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.base = (this.props && this.props.accent) || '#8FE3F0';
+    document.documentElement.style.setProperty('--acc', this.base);
+    try { document.documentElement.lang = this.state.lang; } catch (e) {}
+    this.waitLibs(() => this.initAll());
+    // preloader progress + safety hide
+    this.startPreloader();
+  }
+
+  componentDidUpdate(prev){
+    if (prev && prev.lang !== undefined) {} // state prev handled below
+    // react to prop changes
+    const p = this.props || {};
+    if (this._lastAccent !== p.accent && p.accent) {
+      this._lastAccent = p.accent; this.base = p.accent;
+      document.documentElement.style.setProperty('--acc', p.accent);
+      if (this.core) this.core.setBase(p.accent);
+    }
+    try { document.documentElement.lang = this.state.lang; } catch (e) {}
+    if (window.ScrollTrigger) { try { ScrollTrigger.refresh(); } catch (e) {} }
+  }
+
+  componentWillUnmount(){
+    cancelAnimationFrame(this._raf); cancelAnimationFrame(this._craf);
+    if (this._procTimer) clearInterval(this._procTimer);
+    this._sts.forEach(t => { try { t.kill(); } catch (e) {} });
+    if (this.core && this.core.dispose) this.core.dispose();
+    window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('mousemove', this._onMove);
+    document.removeEventListener('visibilitychange', this._onVis);
+    if (this._onHeroClick) document.removeEventListener('click', this._onHeroClick);
+  }
+
+  waitLibs(cb){
+    let n = 0;
+    const tick = () => {
+      n++;
+      if ((window.THREE && window.gsap) || n > 60) { cb(); return; }
+      setTimeout(tick, 60);
+    };
+    tick();
+  }
+
+  /* ---------------- PRELOADER ---------------- */
+  startPreloader(){
+    const pre = document.getElementById('ol-pre');
+    const bar = document.getElementById('ol-pre-bar');
+    const pct = document.getElementById('ol-pre-pct');
+    if (!pre) return;
+    const t0 = Date.now(); let done = false;
+    const finish = () => {
+      if (done) return; done = true;
+      if (pct) pct.textContent = '100';
+      if (bar) bar.style.transform = 'scaleX(1)';
+      setTimeout(() => { pre.classList.add('done'); this.playIntro(); }, 260);
+    };
+    const loop = () => {
+      const el = Date.now() - t0;
+      const ready = (window.THREE && window.gsap);
+      let p = Math.min(el / 1100, 0.96);
+      if (ready && el > 900) p = 1;
+      if (bar) bar.style.transform = 'scaleX(' + p + ')';
+      if (pct) pct.textContent = String(Math.round(p * 100)).padStart(3, '0');
+      if (p >= 1) { finish(); return; }
+      requestAnimationFrame(loop);
+    };
+    if (this.reduced) { setTimeout(finish, 200); } else { requestAnimationFrame(loop); }
+    setTimeout(finish, 3400); // safety
+  }
+
+  playIntro(){
+    const g = window.gsap;
+    if (!g || this.reduced) return;
+    const tl = g.timeline({ defaults: { ease: 'power4.out' } });
+    tl.from('#ol-hero .ol-line__i', { yPercent: 100, duration: 0.8, stagger: 0.07 })
+      .from('#ol-hero [data-hero-fade]', { y: 14, opacity: 0, duration: 0.55, stagger: 0.06, ease: 'power2.out' }, '-=0.4');
+  }
+
+  /* ---------------- INIT ALL ---------------- */
+  initAll(){
+    this.initCursor();
+    this.initCore();
+    this.initScrollFX();
+    this.initProcessTimer();
+    this._onVis = () => {
+      if (document.hidden) { cancelAnimationFrame(this._raf); this._paused = true; }
+      else if (this._paused) { this._paused = false; if (this.core) this.core.start(); }
+    };
+    document.addEventListener('visibilitychange', this._onVis);
+  }
+
+  /* ---------------- CURSOR ---------------- */
+  initCursor(){
+    const fine = window.matchMedia && window.matchMedia('(pointer:fine)').matches;
+    this._onMove = (e) => {
+      const nx = (e.clientX / window.innerWidth) * 2 - 1;
+      const ny = (e.clientY / window.innerHeight) * 2 - 1;
+      this._ptr.x = nx; this._ptr.y = ny;
+      this._dot.x = e.clientX; this._dot.y = e.clientY;
+    };
+    window.addEventListener('mousemove', this._onMove, { passive: true });
+    if (!fine || this.reduced) return;
+    document.body.classList.add('has-cursor');
+    const dot = document.getElementById('ol-cur-dot');
+    const ring = document.getElementById('ol-cur-ring');
+    const over = (e) => {
+      const t = e.target.closest && e.target.closest('a,button,[data-cursor],input,textarea,select');
+      if (ring) { ring.style.width = t ? '54px' : '34px'; ring.style.height = t ? '54px' : '34px'; ring.style.borderColor = t ? 'var(--acc)' : 'var(--line2)'; }
+    };
+    document.addEventListener('mouseover', over);
+    const loop = () => {
+      this._craf = requestAnimationFrame(loop);
+      this._ring.x += (this._dot.x - this._ring.x) * 0.18;
+      this._ring.y += (this._dot.y - this._ring.y) * 0.18;
+      if (dot) dot.style.transform = 'translate(' + this._dot.x + 'px,' + this._dot.y + 'px) translate(-50%,-50%)';
+      if (ring) ring.style.transform = 'translate(' + this._ring.x + 'px,' + this._ring.y + 'px) translate(-50%,-50%)';
+    };
+    loop();
+  }
+
+  /* ---------------- 3D CORE ---------------- */
+  initCore(){
+    const cv = document.getElementById('ol-gl');
+    const fb = document.getElementById('ol-fallback');
+    const enabled = !(this.props && this.props.enable3D === false);
+    let renderer;
+    if (enabled && window.THREE && cv) {
+      try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, powerPreference: 'high-performance' }); }
+      catch (e) { renderer = null; }
+    }
+    if (!renderer) { if (cv) cv.style.display = 'none'; if (fb) fb.style.display = 'grid'; return; }
+
+    const T = THREE;
+    const mobile = window.innerWidth < 760;
+    const dpr = Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2);
+    renderer.setPixelRatio(dpr);
+    renderer.setClearColor(0x000000, 0);
+    const scene = new T.Scene();
+    const cam = new T.PerspectiveCamera(45, 1, 0.1, 100);
+    cam.position.set(0, 0, 7.6);
+
+    const glow = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'); const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.35, 'rgba(255,255,255,0.55)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); const t = new T.Texture(c); t.needsUpdate = true; return t; })();
+
+    const R = 2.4;
+    const V = [];
+    for (let i = 0; i < 8; i++) { const a = Math.PI / 8 + i * Math.PI / 4; V.push(new T.Vector3(Math.cos(a) * R, Math.sin(a) * R, 0)); }
+    // slight z displacement for depth
+    V.forEach((v, i) => { v.z = Math.sin(i * 1.7) * 0.28; });
+
+    const grp = new T.Group(); scene.add(grp);
+
+    // K8 web
+    const seg = [];
+    const webPairs = [];
+    for (let i = 0; i < 8; i++) for (let j = i + 1; j < 8; j++) { webPairs.push(i, j); seg.push(V[i].x, V[i].y, V[i].z, V[j].x, V[j].y, V[j].z); }
+    const gWeb = new T.BufferGeometry(); gWeb.setAttribute('position', new T.Float32BufferAttribute(seg, 3));
+    const mWeb = new T.LineBasicMaterial({ color: new T.Color(this.base), transparent: true, opacity: 0.42, blending: T.AdditiveBlending, depthWrite: false });
+    grp.add(new T.LineSegments(gWeb, mWeb));
+
+    // perimeter
+    const per = [];
+    for (let i = 0; i < 8; i++) { const a = V[i], b = V[(i + 1) % 8]; per.push(a.x, a.y, a.z, b.x, b.y, b.z); }
+    const gPer = new T.BufferGeometry(); gPer.setAttribute('position', new T.Float32BufferAttribute(per, 3));
+    const mPer = new T.LineBasicMaterial({ color: new T.Color(this.base), transparent: true, opacity: 0.95, blending: T.AdditiveBlending, depthWrite: false });
+    grp.add(new T.LineSegments(gPer, mPer));
+
+    // vertex points
+    const gPts = new T.BufferGeometry(); const pv = []; V.forEach(v => pv.push(v.x, v.y, v.z));
+    gPts.setAttribute('position', new T.Float32BufferAttribute(pv, 3));
+    const mPts = new T.PointsMaterial({ size: 0.5, map: glow, color: new T.Color(0xffffff), transparent: true, opacity: 0.95, blending: T.AdditiveBlending, depthWrite: false, sizeAttenuation: true });
+    grp.add(new T.Points(gPts, mPts));
+    const V0 = V.map(function (v) { return v.clone(); });
+    const dv = V0.map(function () { return { x: 0, y: 0, z: 0 }; });
+    const webArr = gWeb.attributes.position.array;
+    const perArr = gPer.attributes.position.array;
+    const ptsArr = gPts.attributes.position.array;
+    const t0 = performance.now();
+    // per-node orbital model for the gravitational collapse (positions initialised once)
+    const ang0 = [], z0 = [], orbitR = [], orbitZ = [], spiralDir = [];
+    for (let k = 0; k < 8; k++) { ang0[k] = Math.atan2(V0[k].y, V0[k].x); z0[k] = V0[k].z; orbitR[k] = 0.06 + (k % 4) * 0.028; orbitZ[k] = Math.sin(k * 1.3) * 0.16; spiralDir[k] = (k % 2) ? 1 : -1; }
+    const spiralAmount = 2.4;
+    // collapse: 0 = full octagon, 1 = fully absorbed into the core; drives radius + spiral trajectory
+    const layout = function (t, collapse, amp, orbitSpin, jitter, spiralK) {
+      const open = 1 - collapse;
+      for (let k = 0; k < 8; k++) {
+        const breathe = 1 + amp * (0.085 * Math.sin(t * 0.9) + 0.05 * Math.sin(t * 1.3 + k * 0.7)) * open;
+        const rad = (R * open + orbitR[k] * collapse) * breathe;
+        const ang = ang0[k] + (spiralK * collapse + orbitSpin * collapse) * spiralDir[k];
+        let jx = 0, jy = 0, jz = 0;
+        if (jitter) { jx = (Math.random() - 0.5) * jitter; jy = (Math.random() - 0.5) * jitter; jz = (Math.random() - 0.5) * jitter; }
+        dv[k].x = Math.cos(ang) * rad + jx;
+        dv[k].y = Math.sin(ang) * rad + jy;
+        dv[k].z = z0[k] * open + orbitZ[k] * collapse + amp * 0.18 * Math.sin(t * 0.7 + k * 1.1) * open + jz;
+      }
+      let o = 0;
+      for (let p = 0; p < webPairs.length; p += 2) {
+        const i = webPairs[p], j = webPairs[p + 1];
+        webArr[o++] = dv[i].x; webArr[o++] = dv[i].y; webArr[o++] = dv[i].z;
+        webArr[o++] = dv[j].x; webArr[o++] = dv[j].y; webArr[o++] = dv[j].z;
+      }
+      gWeb.attributes.position.needsUpdate = true;
+      o = 0;
+      for (let i = 0; i < 8; i++) { const a = dv[i], b = dv[(i + 1) % 8]; perArr[o++] = a.x; perArr[o++] = a.y; perArr[o++] = a.z; perArr[o++] = b.x; perArr[o++] = b.y; perArr[o++] = b.z; }
+      gPer.attributes.position.needsUpdate = true;
+      o = 0;
+      for (let i = 0; i < 8; i++) { ptsArr[o++] = dv[i].x; ptsArr[o++] = dv[i].y; ptsArr[o++] = dv[i].z; }
+      gPts.attributes.position.needsUpdate = true;
+    };
+
+    // outer ring (octagon, counter-rotating) — fades out as the octagon collapses
+    const oR = R * 1.75; const outer = [];
+    for (let i = 0; i < 8; i++) { const a1 = Math.PI / 8 + i * Math.PI / 4, a2 = Math.PI / 8 + (i + 1) * Math.PI / 4; outer.push(Math.cos(a1) * oR, Math.sin(a1) * oR, 0, Math.cos(a2) * oR, Math.sin(a2) * oR, 0); }
+    const gO = new T.BufferGeometry(); gO.setAttribute('position', new T.Float32BufferAttribute(outer, 3));
+    const mO = new T.LineBasicMaterial({ color: new T.Color(this.base), transparent: true, opacity: 0.16, blending: T.AdditiveBlending, depthWrite: false });
+    const outerMesh = new T.LineSegments(gO, mO); scene.add(outerMesh);
+
+    // background particle field
+    const N = mobile ? 70 : 200; const pf = [];
+    for (let i = 0; i < N; i++) { const r = 3 + Math.random() * 6; const th = Math.random() * Math.PI * 2; const ph = Math.acos(2 * Math.random() - 1); pf.push(r * Math.sin(ph) * Math.cos(th), r * Math.sin(ph) * Math.sin(th), r * Math.cos(ph)); }
+    const gF = new T.BufferGeometry(); gF.setAttribute('position', new T.Float32BufferAttribute(pf, 3));
+    const mF = new T.PointsMaterial({ size: 0.045, map: glow, color: new T.Color(0xCFE8F0), transparent: true, opacity: 0.55, blending: T.AdditiveBlending, depthWrite: false, sizeAttenuation: true });
+    const field = new T.Points(gF, mF); scene.add(field);
+
+    const warm = new T.Color('#FFC59B');   // white-copper accretion palette
+    const white = new T.Color(0xffffff);
+    const disp = new T.Color();
+    const haloMax = mobile ? 0.5 : 0.8;
+
+    // ---- BLACK-HOLE LAYERS (built once; only opacity/scale/rotation mutate at runtime) ----
+    const mkTex = (sz, draw) => { const c = document.createElement('canvas'); c.width = c.height = sz; draw(c.getContext('2d'), sz); const tx = new T.CanvasTexture(c); tx.needsUpdate = true; return tx; };
+    // dark core — absorbs light (normal-blended, deeper than the page background)
+    const darkTex = mkTex(128, (x, sz) => { const g = x.createRadialGradient(sz / 2, sz / 2, 0, sz / 2, sz / 2, sz / 2); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(0.40, 'rgba(0,0,0,0.99)'); g.addColorStop(0.58, 'rgba(1,2,3,0.96)'); g.addColorStop(0.75, 'rgba(5,7,9,0.72)'); g.addColorStop(1, 'rgba(5,7,9,0)'); x.fillStyle = g; x.fillRect(0, 0, sz, sz); });
+    const core = new T.Sprite(new T.SpriteMaterial({ map: darkTex, transparent: true, opacity: 0, depthWrite: false, depthTest: false }));
+    core.renderOrder = 1; scene.add(core);
+    // faint lensing / mirrored glow around the core
+    const lens = new T.Sprite(new T.SpriteMaterial({ map: glow, color: new T.Color('#F0B48A'), transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false }));
+    lens.renderOrder = 2; scene.add(lens);
+    // accretion ring — uneven white highlight / copper glow with subtle noise
+    const ringTex = mkTex(256, (x, sz) => {
+      const cx = sz / 2, cy = sz / 2, R0 = sz * 0.30, steps = 240;
+      x.clearRect(0, 0, sz, sz); x.lineCap = 'round';
+      for (let i = 0; i < steps; i++) {
+        const a = i / steps * Math.PI * 2;
+        const wt = Math.pow(0.5 + 0.5 * Math.cos(a + Math.PI / 2), 2);
+        const noise = 0.68 + 0.32 * Math.sin(a * 9 + i * 0.7);
+        const cr = Math.round(230 + (255 - 230) * wt), cg = Math.round(150 + (255 - 150) * wt), cb = Math.round(95 + (255 - 95) * wt);
+        x.strokeStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + ((0.14 + 0.62 * wt) * noise).toFixed(3) + ')';
+        x.lineWidth = sz * 0.075 * (0.7 + 0.3 * noise);
+        x.beginPath(); x.arc(cx, cy, R0, a, a + Math.PI * 2 / steps + 0.02); x.stroke();
+      }
+    });
+    const ringGeo = new T.RingGeometry(0.55, 1.0, 96);
+    const mRing = new T.MeshBasicMaterial({ map: ringTex, transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, side: T.DoubleSide });
+    const ring = new T.Mesh(ringGeo, mRing); ring.renderOrder = 3; ring.rotation.x = 1.15; scene.add(ring);
+    // particles orbiting along the ring (children of ring => share tilt + spin)
+    const RP = mobile ? 8 : 20; const rpPos = new Float32Array(RP * 3); const rpBase = [];
+    for (let i = 0; i < RP; i++) { const a = Math.random() * Math.PI * 2, rr = 0.62 + Math.random() * 0.34; rpBase.push({ a: a, rr: rr, sp: 0.3 + Math.random() * 0.7 }); rpPos[i * 3] = Math.cos(a) * rr; rpPos[i * 3 + 1] = Math.sin(a) * rr; rpPos[i * 3 + 2] = 0; }
+    const gRP = new T.BufferGeometry(); gRP.setAttribute('position', new T.BufferAttribute(rpPos, 3));
+    const mRP = new T.PointsMaterial({ size: mobile ? 0.05 : 0.06, map: glow, color: warm.clone(), transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, sizeAttenuation: true });
+    const ringPts = new T.Points(gRP, mRP); ring.add(ringPts);
+    // radial shockwave (explosion release)
+    const shockTex = mkTex(256, (x, sz) => { const cx = sz / 2; const g = x.createRadialGradient(cx, cx, sz * 0.30, cx, cx, sz * 0.5); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.62, 'rgba(255,242,228,0.9)'); g.addColorStop(0.78, 'rgba(240,168,108,0.6)'); g.addColorStop(1, 'rgba(240,168,108,0)'); x.fillStyle = g; x.beginPath(); x.arc(cx, cx, sz * 0.5, 0, 7); x.fill(); });
+    const shock = new T.Sprite(new T.SpriteMaterial({ map: shockTex, transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false }));
+    shock.renderOrder = 4; scene.add(shock);
+    // explosion sparks — scroll-scrubbed radial travel (fully reversible)
+    const SP = mobile ? 10 : 22; const spPos = new Float32Array(SP * 3); const spDir = [];
+    for (let i = 0; i < SP; i++) { const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1), d = 2.2 + Math.random() * 2.6; spDir.push({ x: Math.sin(ph) * Math.cos(th) * d, y: Math.sin(ph) * Math.sin(th) * d, z: Math.cos(ph) * d * 0.6 }); }
+    const gSP = new T.BufferGeometry(); gSP.setAttribute('position', new T.BufferAttribute(spPos, 3));
+    const mSP = new T.PointsMaterial({ size: mobile ? 0.05 : 0.07, map: glow, color: warm.clone(), transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, sizeAttenuation: true });
+    const sparks = new T.Points(gSP, mSP); grp.add(sparks);
+
+    // halo — inner white-hot pulse (energy buildup on destabilize, flash on release)
+    const halo = new T.Sprite(new T.SpriteMaterial({ map: glow, color: new T.Color(this.base), transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false }));
+    halo.scale.set(1.5, 1.5, 1); halo.renderOrder = 5; scene.add(halo);
+
+    // cubic-bezier easing (implosion + explosion curves) and smoothstep
+    const cubicBezier = (x1, y1, x2, y2) => {
+      const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
+      const cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+      const bx3 = (u) => ((ax * u + bx) * u + cx) * u;
+      const by3 = (u) => ((ay * u + by) * u + cy) * u;
+      const dx3 = (u) => (3 * ax * u + 2 * bx) * u + cx;
+      return (t) => { if (t <= 0) return 0; if (t >= 1) return 1; let u = t; for (let i = 0; i < 8; i++) { const x = bx3(u) - t; if (Math.abs(x) < 1e-4) break; const d = dx3(u); if (Math.abs(d) < 1e-6) break; u -= x / d; } return by3(u); };
+    };
+    const easeImplode = cubicBezier(0.55, 0, 0.85, 0.4);
+    const easeExplode = cubicBezier(0.12, 0.75, 0.25, 1.12); // slight overshoot on reconstruction
+    const smoothstep = (t) => { t = t < 0 ? 0 : t > 1 ? 1 : t; return t * t * (3 - 2 * t); };
+
+    const state = { scale: 1, opacity: 1, tScale: 1, tOpacity: 0.5, base: mobile ? 0.72 : 1, spin: 0, rx: 0, ry: 0, yOff: mobile ? 2.2 : 0, col: new T.Color(this.base), tcol: new T.Color(this.base) };
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    const resize = () => {
+      const w = window.innerWidth, h = window.innerHeight;
+      renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix();
+      var _asp = w / h;
+      if (_asp < 1) { var _hw = Math.tan(0.3926991) * cam.position.z * _asp; state.base = (_hw * 0.72) / R; state.yOff = -2.1; }
+      else { state.base = w < 760 ? 0.72 : 1; state.yOff = 0; }
+    };
+    resize();
+    this._onResize = () => { resize(); };
+    window.addEventListener('resize', this._onResize);
+
+    const speed = this.reduced ? 0.4 : 1;
+    const clamp01 = (v) => v < 0 ? 0 : v > 1 ? 1 : v;
+    let last = performance.now();
+    let ringSpin = 0;
+    const tick = () => {
+      this._raf = requestAnimationFrame(tick);
+      const now = performance.now();
+      const dt = Math.min((now - last) * 0.001, 0.05); last = now;
+      const nt = (now - t0) * 0.001;
+
+      // ---- scroll -> phase mapping (smoothed, fully reversible, no timed loop) ----
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const rawSp = maxScroll > 0 ? clamp01(window.scrollY / maxScroll) : 0;
+      this._sp = this._sp == null ? rawSp : this._sp + (rawSp - this._sp) * 0.12; // slight ease, holds when scrolling stops
+      const sp = this._sp;
+
+      const implodeP = sp <= 0.14 ? clamp01(sp / 0.14) : 1;
+      const collapseP = sp <= 0.14 ? 0 : (sp < 0.20 ? clamp01((sp - 0.14) / 0.06) : 1);
+      const destab = clamp01((sp - 0.78) / 0.06);
+      const explosionP = sp < 0.84 ? 0 : clamp01((sp - 0.84) / 0.16);
+
+      // 0-14% implode, 14-20% final collapse, 20-84% black hole, 84-100% explosion/reconstruction
+      let collapse;
+      if (sp <= 0.14) collapse = easeImplode(implodeP) * 0.85;
+      else if (sp < 0.20) collapse = 0.85 + 0.15 * smoothstep(collapseP);
+      else if (sp < 0.84) collapse = 1;
+      else collapse = 1 - easeExplode(explosionP);
+      collapse = this.reduced ? clamp01(collapse) : Math.min(1, Math.max(-0.08, collapse)); // small explosion overshoot
+
+      const energy = clamp01(collapse);
+      const absorbed = smoothstep((collapse - 0.55) / 0.45);       // event-horizon absorption of the nodes
+      const orbitSpin = this.reduced ? 0 : nt * 0.5 * (1 + destab * 1.8);
+      const jitter = this.reduced ? 0 : Math.max(destab * (1 - explosionP) * 0.03, collapse > 0.92 ? 0.006 : 0);
+
+      layout(nt, collapse, speed, orbitSpin, jitter, this.reduced ? 0 : spiralAmount);
+
+      // ---- cursor influence: fades through implosion, returns through explosion ----
+      const cg = this.reduced ? 0 : clamp01(1 - collapse);
+      state.rx = lerp(state.rx, this._ptr.y * 0.42 * speed * cg, 0.06);
+      state.ry = lerp(state.ry, this._ptr.x * 0.58 * speed * cg, 0.06);
+      state.spin += this.reduced ? 0 : (0.05 + energy * 0.8) * speed * dt;
+      grp.rotation.set(0.3 + state.rx, state.ry + state.spin, 0);
+
+      state.scale = lerp(state.scale, state.tScale, 0.06);
+      state.opacity = lerp(state.opacity, state.tOpacity, 0.06);
+      const s = state.scale * state.base;
+      const yO = state.yOff;
+      grp.scale.setScalar(s); grp.position.y = yO;
+
+      // octagon materials (compress + brighten + get absorbed)
+      state.col.lerp(state.tcol, 0.05);
+      disp.copy(state.col).lerp(warm, energy * 0.6);
+      const lineFade = 1 - 0.92 * absorbed;
+      mWeb.color.copy(disp); mWeb.opacity = (0.42 + 0.45 * energy) * lineFade * state.opacity;
+      mPer.color.copy(disp); mPer.opacity = (0.95 + 0.35 * energy) * lineFade * state.opacity;
+      mPts.color.copy(white).lerp(warm, energy * 0.4);
+      mPts.size = 0.5 * (1 - 0.55 * absorbed) + 0.12 * collapse;
+      mPts.opacity = (0.95 * (1 - 0.9 * absorbed)) * state.opacity + energy * 0.05;
+      mO.color.copy(disp); mO.opacity = 0.16 * state.opacity * clamp01(1 - collapse);
+      outerMesh.scale.setScalar(s * (1 + 0.05 * Math.sin(nt * 0.6) * speed) * (1 - collapse * 0.5)); outerMesh.position.y = yO;
+
+      // ---- black-hole layers ----
+      const coreOn = smoothstep((collapse - 0.45) / 0.5);
+      const ringOn = smoothstep((collapse - 0.5) / 0.45);
+      const shockProg = clamp01(explosionP * 2.5);
+      const vib = this.reduced ? 0 : destab * 0.05 * Math.sin(nt * 30);
+      // dark core (contracts + vibrates on destabilize)
+      core.material.opacity = coreOn * (this.reduced ? 0.85 : 0.95);
+      const coreScale = (1.7 * (1 + 0.05 * Math.sin(nt * 1.6)) - destab * 0.18 + vib) * s;
+      core.scale.setScalar(Math.max(0.05, coreScale)); core.position.set(vib * 0.3, yO, 0);
+      // lensing glow
+      lens.material.color.copy(warm); lens.material.opacity = coreOn * (0.15 + 0.14 * destab);
+      lens.scale.setScalar(3.2 * s); lens.position.set(0, yO, 0);
+      // accretion ring (spin accelerates on destabilize + explosion)
+      ringSpin += (0.25 + destab * 1.6 + explosionP * 2.2) * dt * (this.reduced ? 0.2 : 1);
+      mRing.opacity = ringOn * (0.55 + 0.35 * destab) * (this.reduced ? 0.7 : 1);
+      ring.rotation.z = ringSpin;
+      ring.rotation.x = 1.15 + (this.reduced ? 0 : this._ptr.y * 0.05 * collapse);
+      ring.rotation.y = this.reduced ? 0 : this._ptr.x * 0.05 * collapse;
+      ring.scale.set(1.55 * s, 1.55 * s, 1.55 * s); ring.position.set(0, yO, 0);
+      mRP.opacity = ringOn * (0.55 + 0.4 * destab) * (this.reduced ? 0.5 : 1);
+      for (let i = 0; i < RP; i++) { const b = rpBase[i]; b.a += dt * b.sp * 0.4 * (1 + destab); const rr = b.rr * (1 - destab * 0.08); rpPos[i * 3] = Math.cos(b.a) * rr; rpPos[i * 3 + 1] = Math.sin(b.a) * rr; }
+      gRP.attributes.position.needsUpdate = true;
+      // shockwave (derived from explosionProgress only)
+      shock.material.opacity = Math.sin(shockProg * Math.PI) * 0.5 * (this.reduced ? 0 : 1);
+      shock.scale.setScalar((0.6 + shockProg * 3.0) * s); shock.position.set(0, yO, 0);
+      // sparks (radial position scrubbed by explosionProgress)
+      const sparkEnv = Math.sin(clamp01(explosionP * 1.25) * Math.PI);
+      mSP.opacity = sparkEnv * (this.reduced ? 0 : 0.85);
+      for (let i = 0; i < SP; i++) { spPos[i * 3] = spDir[i].x * explosionP; spPos[i * 3 + 1] = spDir[i].y * explosionP; spPos[i * 3 + 2] = spDir[i].z * explosionP; }
+      gSP.attributes.position.needsUpdate = true;
+      // inner white-hot pulse: energy buildup on destabilize, flash on release
+      halo.material.color.copy(white).lerp(warm, 0.4);
+      halo.material.opacity = clamp01(destab * 0.5 + Math.sin(shockProg * Math.PI) * 0.6) * haloMax * (this.reduced ? 0.4 : 1);
+      halo.scale.setScalar((0.6 + destab * 0.5 + shockProg * 0.7) * s); halo.position.set(0, yO, 0);
+
+      field.rotation.y += 0.00016 * speed; field.rotation.x += 0.00007 * speed;
+      renderer.render(scene, cam);
+    };
+    tick();
+
+    this.core = {
+      setScene: (sc, op, hex) => { state.tScale = sc; state.tOpacity = op; if (hex) state.tcol.set(hex); },
+      setAccent: (hex) => { if (hex) state.tcol.set(hex); },
+      setBase: (hex) => { state.tcol.set(hex); },
+      start: () => { if (!this._paused) { cancelAnimationFrame(this._raf); tick(); } },
+      dispose: () => { try { gWeb.dispose(); gPer.dispose(); gPts.dispose(); gO.dispose(); gF.dispose(); ringGeo.dispose(); gRP.dispose(); gSP.dispose(); glow.dispose(); darkTex.dispose(); ringTex.dispose(); shockTex.dispose(); renderer.dispose(); } catch (e) {} }
+    };
+
+  }
+
+  /* ---------------- SCROLL FX ---------------- */
+  initScrollFX(){
+    const prog = document.getElementById('ol-progress');
+    const nav = document.getElementById('ol-nav');
+    this._onScroll = () => {
+      const st = window.pageYOffset || document.documentElement.scrollTop;
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      const p = h > 0 ? st / h : 0;
+      if (prog) prog.style.transform = 'scaleX(' + p + ')';
+      if (nav) nav.classList.toggle('is-scrolled', st > 60);
+      var _gl = document.getElementById('ol-gl'); var _fb = document.getElementById('ol-fallback');
+      if (window.innerWidth <= 760) { var _o = st > window.innerHeight * 0.6 ? 0.55 : 1; if (_gl) _gl.style.opacity = _o; if (_fb) _fb.style.opacity = _o; }
+      else { if (_gl) _gl.style.opacity = 1; if (_fb) _fb.style.opacity = 1; }
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    this._onScroll();
+
+    const g = window.gsap;
+    if (!g || !window.ScrollTrigger) return;
+    g.registerPlugin(ScrollTrigger);
+
+    if (!this.reduced) {
+      g.utils.toArray('[data-reveal]').forEach((el) => {
+        const t = g.from(el, { y: 16, opacity: 0, duration: 0.55, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
+        if (t.scrollTrigger) this._sts.push(t.scrollTrigger);
+      });
+      g.utils.toArray('[data-lines]').forEach((box) => {
+        if (box.closest('#ol-hero')) return; // hero handled by intro
+        const lines = box.querySelectorAll('.ol-line__i');
+        const t = g.from(lines, { yPercent: 100, duration: 0.7, ease: 'power3.out', stagger: 0.05, scrollTrigger: { trigger: box, start: 'top 88%', once: true } });
+        if (t.scrollTrigger) this._sts.push(t.scrollTrigger);
+      });
+    }
+
+    // counters
+    document.querySelectorAll('.ol-metric__num-v').forEach((el) => {
+      const num = parseFloat(el.getAttribute('data-num')) || 0;
+      const dec = parseInt(el.getAttribute('data-dec')) || 0;
+      const pad = parseInt(el.getAttribute('data-pad')) || 0;
+      const suf = el.getAttribute('data-suffix') || '';
+      const fmt = (v) => { let s = dec ? v.toFixed(dec) : String(Math.round(v)); if (pad) s = s.padStart(pad, '0'); return s + suf; };
+      if (this.reduced || !g.to) { el.textContent = fmt(num); return; }
+      const o = { v: 0 };
+      const t = g.to(o, { v: num, duration: 1.8, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true }, onUpdate: () => { el.textContent = fmt(o.v); } });
+      if (t.scrollTrigger) this._sts.push(t.scrollTrigger);
+    });
+
+    // core scenes per section
+    const base = this.base;
+    [].forEach((el) => {
+      const sc = parseFloat(el.getAttribute('data-core-scale'));
+      const op = parseFloat(el.getAttribute('data-core-opacity'));
+      const hex = el.getAttribute('data-core-accent') || base;
+      const set = () => { if (this.core) this.core.setScene(sc, op, hex); };
+      const t = ScrollTrigger.create({ trigger: el, start: 'top 55%', end: 'bottom 45%', onEnter: set, onEnterBack: set });
+      this._sts.push(t);
+    });
+    // per-project accent
+    [].forEach((el) => {
+      const hex = el.getAttribute('data-accent');
+      const t = ScrollTrigger.create({ trigger: el, start: 'top 60%', end: 'bottom 40%', onEnter: () => this.core && this.core.setAccent(hex), onEnterBack: () => this.core && this.core.setAccent(hex) });
+      this._sts.push(t);
+    });
+  }
+
+  initProcessTimer(){
+    if (this.reduced) return;
+    this._procTimer = setInterval(() => {
+      if (this._procHover || document.hidden) return;
+      this.setState((s) => ({ activeStep: (s.activeStep + 1) % 6 }));
+    }, 5600);
+  }
+
+  /* ---------------- INTERACTIONS ---------------- */
+  toggleMenu(open){
+    const m = document.getElementById('ol-menu');
+    const b = document.querySelector('.ol-burger');
+    if (!m) return;
+    m.classList.toggle('open', open);
+    m.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  scrollTo(sel){
+    const el = document.querySelector(sel);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + (window.pageYOffset || 0) - 8;
+    window.scrollTo({ top, behavior: this.reduced ? 'auto' : 'smooth' });
+  }
+
+  onSubmit(e){
+    e.preventDefault();
+    const f = e.target;
+    const checks = [
+      ['name', (v) => v.trim().length > 1],
+      ['email', (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v.trim())],
+      ['message', (v) => v.trim().length > 3]
+    ];
+    let ok = true, firstBad = null;
+    checks.forEach(([id, test]) => {
+      const el = f.querySelector('#ol-f-' + id);
+      const err = f.querySelector('#ol-e-' + id);
+      const good = el ? test(el.value) : false;
+      if (el) { el.setAttribute('aria-invalid', good ? 'false' : 'true'); el.style.borderColor = good ? '' : '#FF8A8A'; }
+      if (err) err.style.display = good ? 'none' : 'block';
+      if (!good && !firstBad) firstBad = el;
+      if (!good) ok = false;
+    });
+    if (!ok) { if (firstBad) firstBad.focus(); return; }
+    this.sendEmail(f);
+  }
+
+  sendEmail(f){
+    const isES = this.state.lang === 'es';
+    const val = (id) => { const el = f.querySelector('#ol-f-' + id); return el ? el.value.trim() : ''; };
+    const name = val('name'), company = val('company'), email = val('email'), type = val('type'), message = val('message');
+    const btn = f.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.style.opacity = '.6'; btn.style.pointerEvents = 'none'; }
+    const payload = {
+      name: name,
+      email: email,
+      company: company || '—',
+      'project type': type || '—',
+      message: message,
+      _subject: 'Octagon Labs — New project inquiry from ' + (name || 'website'),
+      _template: 'table'
+    };
+    fetch('https://formsubmit.co/ajax/octagon.labs@protonmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then((r) => {
+      if (!r.ok) throw new Error('bad status');
+      return r.json();
+    }).then(() => {
+      this.setState({ sent: true });
+    }).catch(() => {
+      // fallback: open the user's mail client pre-filled
+      const subject = encodeURIComponent('Octagon Labs — project inquiry from ' + (name || ''));
+      const bodyLines = [
+        'Name: ' + name,
+        'Company: ' + (company || '—'),
+        'Email: ' + email,
+        'Project type: ' + (type || '—'),
+        '',
+        message
+      ];
+      const href = 'mailto:octagon.labs@protonmail.com?subject=' + subject + '&body=' + encodeURIComponent(bodyLines.join('\n'));
+      try { window.location.href = href; } catch (e) {}
+      this.setState({ sent: true });
+    }).then(() => {
+      if (btn) { btn.disabled = false; btn.style.opacity = ''; btn.style.pointerEvents = ''; }
+    });
+  }
+
+  openWA(form){
+    const isES = this.state.lang === 'es';
+    let text = isES ? 'Hola Octagon Labs, me gustaría platicar sobre un proyecto.' : "Hi Octagon Labs, I'd like to talk about a project.";
+    if (form && form.querySelector) {
+      const val = (id) => { const el = form.querySelector('#ol-f-' + id); return el ? el.value.trim() : ''; };
+      const name = val('name'), company = val('company'), email = val('email'), type = val('type'), message = val('message');
+      const L = isES
+        ? [ name ? 'Hola Octagon Labs, soy ' + name + '.' : 'Hola Octagon Labs.', company ? 'Empresa: ' + company : '', email ? 'Correo: ' + email : '', type ? 'Proyecto: ' + type : '', message ? 'Mensaje: ' + message : '' ]
+        : [ name ? "Hi Octagon Labs, I'm " + name + '.' : 'Hi Octagon Labs.', company ? 'Company: ' + company : '', email ? 'Email: ' + email : '', type ? 'Project: ' + type : '', message ? 'Message: ' + message : '' ];
+      text = L.filter(Boolean).join('\n');
+    }
+    const url = 'https://wa.me/528114696951?text=' + encodeURIComponent(text);
+    try { window.open(url, '_blank', 'noopener'); } catch (e) { window.location.href = url; }
+  }
+}
+</script>
+</body>
+</html>
